@@ -23,10 +23,8 @@ void main() {
     final store = JobStore(prefs);
     await tester.pumpWidget(LangkahKerjaApp(store: store));
     await tester.pumpAndSettle();
-    expect(find.text('Cari Kerja (Employee)'), findsOneWidget);
-    expect(find.text('Post Kerja (Employer)'), findsOneWidget);
-    expect(find.text('Mulai Cari Kerja'), findsOneWidget);
-    await tester.tap(find.text('Mulai Cari Kerja'));
+    expect(find.text('Cari Kerja (Employee)'), findsWidgets);
+    await tester.tap(find.text('Cari Kerja (Employee)'));
     await tester.pumpAndSettle();
     expect(store.onboardingComplete, isTrue);
     expect(store.activeRole, 'employee');
@@ -42,14 +40,26 @@ void main() {
     final store = JobStore(prefs);
     await tester.pumpWidget(LangkahKerjaApp(store: store));
     await tester.pumpAndSettle();
-    expect(find.text('Post Kerja (Employer)'), findsOneWidget);
-    expect(find.text('Mulai Pasang Lowongan'), findsOneWidget);
-    await tester.tap(find.text('Mulai Pasang Lowongan'));
+    expect(find.text('Post Kerja (Employer)'), findsWidgets);
+    await tester.tap(find.text('Post Kerja (Employer)'));
     await tester.pumpAndSettle();
     expect(store.onboardingComplete, isTrue);
     expect(store.activeRole, 'employer');
     expect(find.text('Lowongan'), findsWidgets);
-    expect(find.text('Pasang Lowongan Baru'), findsOneWidget);
+    expect(tester.takeException(), isNull);
+  });
+  testWidgets('tombol baca kebijakan privasi membuka halaman kebijakan', (
+    tester,
+  ) async {
+    SharedPreferences.setMockInitialValues({});
+    final prefs = await SharedPreferences.getInstance();
+    final store = JobStore(prefs);
+    await tester.pumpWidget(LangkahKerjaApp(store: store));
+    await tester.pumpAndSettle();
+    expect(find.text('Baca kebijakan privasi'), findsOneWidget);
+    await tester.tap(find.text('Baca kebijakan privasi'));
+    await tester.pumpAndSettle();
+    expect(find.text('Kebijakan privasi'), findsWidgets);
     expect(tester.takeException(), isNull);
   });
   testWidgets('lamaran manual tersimpan tanpa membutuhkan akun atau feed', (

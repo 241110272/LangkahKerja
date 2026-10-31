@@ -7,7 +7,6 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'config.dart';
 import 'screens/app.dart';
 import 'screens/onboarding.dart';
-import 'screens/role_selection.dart';
 import 'screens/employer.dart';
 import 'screens/account.dart';
 import 'screens/detail.dart';
@@ -336,7 +335,7 @@ class _AppRootState extends State<AppRoot> with WidgetsBindingObserver {
     ]),
     builder: (context, _) {
       if (!widget.store.onboardingComplete || widget.store.activeRole == null) {
-        return RoleSelectionScreen(store: widget.store, cloud: widget.cloud);
+        return Onboarding(store: widget.store);
       }
       if (!started) {
         started = true;

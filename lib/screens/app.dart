@@ -561,12 +561,6 @@ class _AppShellState extends State<AppShell>
             ),
           ),
         ),
-        const SizedBox(height: 24),
-        const Text(
-          'Mendukung SDG 8 · Pekerjaan layak & pertumbuhan ekonomi',
-          textAlign: TextAlign.center,
-          style: TextStyle(color: muted, fontSize: 9),
-        ),
       ],
     ),
   );
