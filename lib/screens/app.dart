@@ -82,6 +82,28 @@ class _AppShellState extends State<AppShell>
                   const SizedBox(width: 8),
                   const Brand(),
                   const Spacer(),
+                  ActionChip(
+                    avatar: const Icon(
+                      Icons.swap_horiz_rounded,
+                      size: 16,
+                      color: plum,
+                    ),
+                    label: const Text(
+                      'Hirer',
+                      style: TextStyle(
+                        fontSize: 11,
+                        fontWeight: FontWeight.w700,
+                        color: plum,
+                      ),
+                    ),
+                    backgroundColor: lavender.withValues(alpha: .7),
+                    side: BorderSide.none,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    tooltip: 'Beralih ke Mode Post Kerja (Hirer)',
+                    onPressed: () => store.setActiveRole('employer'),
+                  ),
                 ],
               ),
             ),
@@ -172,6 +194,22 @@ class _AppShellState extends State<AppShell>
               child: ListView(
                 padding: const EdgeInsets.fromLTRB(14, 18, 14, 22),
                 children: [
+                  _drawerHeading('PERAN & MODE'),
+                  _drawerEntry(
+                    order: order++,
+                    icon: Icons.business_center_rounded,
+                    title: 'Post Kerja (Employer)',
+                    subtitle: 'Beralih ke mode pasang lowongan',
+                    onTap: () => store.setActiveRole('employer'),
+                  ),
+                  _drawerEntry(
+                    order: order++,
+                    icon: Icons.swap_horiz_rounded,
+                    title: 'Menu Pilih Peran',
+                    subtitle: 'Kembali ke pilihan Employee / Employer',
+                    onTap: () => store.setActiveRole(null),
+                  ),
+                  const SizedBox(height: 12),
                   _drawerHeading('JELAJAHI'),
                   _drawerEntry(
                     order: order++,
@@ -403,10 +441,6 @@ class _AppShellState extends State<AppShell>
       key: const PageStorageKey('home'),
       padding: const EdgeInsets.fromLTRB(22, 0, 22, 22),
       children: [
-        Text(
-          'Halo, ${store.name.isEmpty ? 'Sahabat' : store.name} 👋',
-          style: const TextStyle(fontSize: 13, color: ink),
-        ),
         const SizedBox(height: 5),
         headline('Kariermu,\nlangkahmu.'),
         const SizedBox(height: 15),

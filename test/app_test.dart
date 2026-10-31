@@ -15,7 +15,7 @@ void main() {
       ..addFont(rootBundle.load('assets/fonts/Manrope.ttf'));
     await font.load();
   });
-  testWidgets('onboarding menjelaskan privasi dan menyimpan penyelesaian', (
+  testWidgets('menu pilih peran menggantikan onboarding dan memilih cari kerja', (
     tester,
   ) async {
     SharedPreferences.setMockInitialValues({});
@@ -23,14 +23,33 @@ void main() {
     final store = JobStore(prefs);
     await tester.pumpWidget(LangkahKerjaApp(store: store));
     await tester.pumpAndSettle();
-    await tester.tap(find.text('Lewati'));
-    await tester.pumpAndSettle();
-    expect(find.text('Mulai melangkah'), findsOneWidget);
-    await tester.tap(find.text('Mulai melangkah'));
+    expect(find.text('Cari Kerja (Employee)'), findsOneWidget);
+    expect(find.text('Post Kerja (Employer)'), findsOneWidget);
+    expect(find.text('Mulai Cari Kerja'), findsOneWidget);
+    await tester.tap(find.text('Mulai Cari Kerja'));
     await tester.pumpAndSettle();
     expect(store.onboardingComplete, isTrue);
+    expect(store.activeRole, 'employee');
     expect((JobStore(prefs)..restore()).onboardingComplete, isTrue);
     expect(find.text('Eksplorasi'), findsOneWidget);
+    expect(tester.takeException(), isNull);
+  });
+  testWidgets('menu pilih peran dapat memilih post kerja employer', (
+    tester,
+  ) async {
+    SharedPreferences.setMockInitialValues({});
+    final prefs = await SharedPreferences.getInstance();
+    final store = JobStore(prefs);
+    await tester.pumpWidget(LangkahKerjaApp(store: store));
+    await tester.pumpAndSettle();
+    expect(find.text('Post Kerja (Employer)'), findsOneWidget);
+    expect(find.text('Mulai Pasang Lowongan'), findsOneWidget);
+    await tester.tap(find.text('Mulai Pasang Lowongan'));
+    await tester.pumpAndSettle();
+    expect(store.onboardingComplete, isTrue);
+    expect(store.activeRole, 'employer');
+    expect(find.text('Lowongan'), findsWidgets);
+    expect(find.text('Pasang Lowongan Baru'), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
   testWidgets('lamaran manual tersimpan tanpa membutuhkan akun atau feed', (

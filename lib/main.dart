@@ -7,6 +7,8 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'config.dart';
 import 'screens/app.dart';
 import 'screens/onboarding.dart';
+import 'screens/role_selection.dart';
+import 'screens/employer.dart';
 import 'screens/account.dart';
 import 'screens/detail.dart';
 import 'services/app_scope.dart';
@@ -333,8 +335,8 @@ class _AppRootState extends State<AppRoot> with WidgetsBindingObserver {
       if (widget.cloud != null) widget.cloud!,
     ]),
     builder: (context, _) {
-      if (!widget.store.onboardingComplete) {
-        return Onboarding(store: widget.store);
+      if (!widget.store.onboardingComplete || widget.store.activeRole == null) {
+        return RoleSelectionScreen(store: widget.store, cloud: widget.cloud);
       }
       if (!started) {
         started = true;
@@ -352,6 +354,9 @@ class _AppRootState extends State<AppRoot> with WidgetsBindingObserver {
         );
       }
       openPendingReminder();
+      if (widget.store.activeRole == 'employer') {
+        return EmployerShell(store: widget.store, cloud: widget.cloud);
+      }
       return AppShell(store: widget.store, cloud: widget.cloud);
     },
   );
