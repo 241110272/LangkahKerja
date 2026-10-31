@@ -211,7 +211,7 @@ class _DataPrivacyPageState extends State<DataPrivacyPage> {
         ),
         const SizedBox(height: 16),
         const Text(
-          'Penghapusan akun beserta data server tersedia di Profil → Akun & sinkronisasi. Pada perangkat lain, salinan offline mungkin tetap ada sampai perangkat tersambung atau datanya dibersihkan.',
+          'Penghapusan akun beserta data server tersedia di hamburger → Profil & preferensi → Akun & sinkronisasi. Pada perangkat lain, salinan offline mungkin tetap ada sampai perangkat tersambung atau datanya dibersihkan.',
           style: TextStyle(fontSize: 11, color: muted, height: 1.7),
         ),
         if (busy)

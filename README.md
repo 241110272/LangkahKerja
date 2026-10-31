@@ -30,6 +30,7 @@ Pada komputer ini, Flutter ada di `C:\Users\sastr\.codex\tools\flutter\bin\flutt
 - Login/daftar lewat kode email, sesi aman di perangkat mobile, sinkronisasi revisi, pemisahan akun, dan penyelesaian konflik.
 - Ekspor cadangan JSON, pemulihan tervalidasi, ekspor CSV, penghapusan data/cache, dan penghapusan akun.
 - Checklist persiapan serta materi CV, portofolio, interview, dan keamanan lowongan.
+- Menu hamburger dengan draf CV/surat, generator crop pasfoto rasio 3:4, dan pemilih identitas opsional. Draf hanya sementara; dokumen identitas tidak diunggah atau disimpan oleh aplikasi.
 - Ikon aplikasi, konfigurasi signing rilis, CI, skema SQL/RLS, Edge Functions, halaman privasi/penghapusan publik, dan draf listing Play Store.
 
 **Status integrasi:** sesuai permintaan pemilik, Supabase hanya disiapkan sebagai kode dan panduan; belum diterapkan ke proyek mana pun. Feed Indonesia memerlukan data kurasi berizin atau API provider yang sudah disetujui. Tanpa konfigurasi, fitur lokal dan mode demo tetap bisa dicoba; login/feed tidak menampilkan sukses palsu.
@@ -72,7 +73,7 @@ Ini memeriksa pembatasan feed publik, isolasi data per akun, revisi konflik, kuo
 3. Buka detail, simpan favorit, pilih status, tulis catatan lalu **Simpan catatan**.
 4. Tambahkan agenda. Pada Android/iOS, aktifkan notifikasi jika diinginkan.
 5. Di Lamaran, pilih **Catat lowongan sendiri** untuk peluang dari luar aplikasi.
-6. Buka Profil → Bekal karier, Data & privasi, atau Akun & sinkronisasi.
+6. Buka hamburger untuk Peluang, alat berkas karier, Perjalanan karier, atau Profil & preferensi.
 7. Ekspor cadangan, muat ulang aplikasi, dan periksa pemulihan data.
 
 ## Struktur
