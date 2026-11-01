@@ -82,27 +82,119 @@ class _AppShellState extends State<AppShell>
                   const SizedBox(width: 8),
                   const Brand(),
                   const Spacer(),
-                  ActionChip(
-                    avatar: const Icon(
-                      Icons.swap_horiz_rounded,
-                      size: 16,
-                      color: plum,
+                  PopupMenuButton<String>(
+                    tooltip: '',
+                    color: Colors.white,
+                    surfaceTintColor: Colors.transparent,
+                    elevation: 6,
+                    shadowColor: plum.withValues(alpha: 0.12),
+                    offset: const Offset(0, 8),
+
+                    // FIX: Match interaction effect to button's rounded corners.
+                    borderRadius: BorderRadius.circular(12),
+                    clipBehavior: Clip.antiAlias,
+
+                    // Dropdown shape
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(14),
+                      side: const BorderSide(color: line),
                     ),
-                    label: const Text(
-                      'Hirer',
-                      style: TextStyle(
-                        fontSize: 11,
-                        fontWeight: FontWeight.w700,
-                        color: plum,
+
+                    onSelected: (role) => widget.store.setActiveRole(role),
+
+                    itemBuilder: (context) => const [
+                      PopupMenuItem(
+                        value: 'employee',
+                        height: 50,
+                        child: Row(
+                          children: [
+                            Icon(
+                              Icons.person_search_rounded,
+                              size: 19,
+                              color: plum,
+                            ),
+                            SizedBox(width: 10),
+                            Text(
+                              'Hiree',
+                              style: TextStyle(fontSize: 12),
+                            ),
+                          ],
+                        ),
+                      ),
+                      PopupMenuItem(
+                        value: 'employer',
+                        height: 50,
+                        child: Row(
+                          children: [
+                            Icon(
+                              Icons.business_center_outlined,
+                              size: 19,
+                              color: plum,
+                            ),
+                            SizedBox(width: 10),
+                            Text(
+                              'Hirer',
+                              style: TextStyle(fontSize: 12),
+                            ),
+                          ],
+                        ),
+                      ),
+                      PopupMenuItem(
+                        value: 'admin',
+                        height: 50,
+                        child: Row(
+                          children: [
+                            Icon(
+                              Icons.admin_panel_settings_outlined,
+                              size: 19,
+                              color: plum,
+                            ),
+                            SizedBox(width: 10),
+                            Text(
+                              'Admin',
+                              style: TextStyle(fontSize: 12),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+
+                    // Switch Mode button
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 11,
+                        vertical: 9,
+                      ),
+                      decoration: BoxDecoration(
+                        color: lavender.withValues(alpha: 0.7),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: const Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(
+                            Icons.swap_horiz_rounded,
+                            size: 16,
+                            color: plum,
+                          ),
+                          SizedBox(width: 5),
+                          Text(
+                            'Switch Mode',
+                            style: TextStyle(
+                              fontSize: 11,
+                              fontWeight: FontWeight.w700,
+                              color: plum,
+                            ),
+                          ),
+                          SizedBox(width: 3),
+                          Icon(
+                            Icons.keyboard_arrow_down_rounded,
+                            size: 16,
+                            color: plum,
+                          ),
+                        ],
                       ),
                     ),
-                    backgroundColor: lavender.withValues(alpha: .7),
-                    side: BorderSide.none,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    tooltip: 'Beralih ke Mode Post Kerja (Hirer)',
-                    onPressed: () => store.setActiveRole('employer'),
                   ),
                 ],
               ),

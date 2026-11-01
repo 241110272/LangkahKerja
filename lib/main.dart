@@ -8,6 +8,7 @@ import 'config.dart';
 import 'screens/app.dart';
 import 'screens/onboarding.dart';
 import 'screens/employer.dart';
+import 'screens/admin.dart';
 import 'screens/account.dart';
 import 'screens/detail.dart';
 import 'services/app_scope.dart';
@@ -353,10 +354,25 @@ class _AppRootState extends State<AppRoot> with WidgetsBindingObserver {
         );
       }
       openPendingReminder();
-      if (widget.store.activeRole == 'employer') {
-        return EmployerShell(store: widget.store, cloud: widget.cloud);
+      switch (widget.store.activeRole) {
+        case 'admin':
+          return AdminShell(
+            store: widget.store,
+            cloud: widget.cloud,
+          );
+
+        case 'employer':
+          return EmployerShell(
+            store: widget.store,
+            cloud: widget.cloud,
+          );
+
+        default:
+          return AppShell(
+            store: widget.store,
+            cloud: widget.cloud,
+          );
       }
-      return AppShell(store: widget.store, cloud: widget.cloud);
     },
   );
 }
