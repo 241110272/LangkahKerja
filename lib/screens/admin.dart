@@ -8,11 +8,7 @@ import '../widgets/role_switcher.dart';
 
 /// Frontend-only Admin mode.
 class AdminShell extends StatefulWidget {
-  const AdminShell({
-    super.key,
-    required this.store,
-    this.cloud,
-  });
+  const AdminShell({super.key, required this.store, this.cloud});
 
   final JobStore store;
   final CloudController? cloud;
@@ -190,43 +186,39 @@ class _AdminShellState extends State<AdminShell>
                   1 => _vacancyTab(),
 
                   2 => _userTab(
-                      title: 'Employee',
-                      subtitle: 'Kelola akun pencari kerja',
-                      records: employees,
-                      query: employeeQuery,
-                      filter: employeeFilter,
-                      onQueryChanged: (value) =>
-                          setState(() => employeeQuery = value),
-                      onFilterChanged: (value) =>
-                          setState(() => employeeFilter = value),
-                      filters: const [
-                        'Semua',
-                        'Aktif',
-                        'Ditangguhkan',
-                      ],
-                      emptyMessage: 'Employee tidak ditemukan.',
-                      isEmployer: false,
-                    ),
+                    title: 'Employee',
+                    subtitle: 'Kelola akun pencari kerja',
+                    records: employees,
+                    query: employeeQuery,
+                    filter: employeeFilter,
+                    onQueryChanged: (value) =>
+                        setState(() => employeeQuery = value),
+                    onFilterChanged: (value) =>
+                        setState(() => employeeFilter = value),
+                    filters: const ['Semua', 'Aktif', 'Ditangguhkan'],
+                    emptyMessage: 'Employee tidak ditemukan.',
+                    isEmployer: false,
+                  ),
 
                   _ => _userTab(
-                      title: 'Employer',
-                      subtitle: 'Kelola akun perusahaan',
-                      records: employers,
-                      query: employerQuery,
-                      filter: employerFilter,
-                      onQueryChanged: (value) =>
-                          setState(() => employerQuery = value),
-                      onFilterChanged: (value) =>
-                          setState(() => employerFilter = value),
-                      filters: const [
-                        'Semua',
-                        'Terverifikasi',
-                        'Menunggu',
-                        'Ditangguhkan',
-                      ],
-                      emptyMessage: 'Employer tidak ditemukan.',
-                      isEmployer: true,
-                    ),
+                    title: 'Employer',
+                    subtitle: 'Kelola akun perusahaan',
+                    records: employers,
+                    query: employerQuery,
+                    filter: employerFilter,
+                    onQueryChanged: (value) =>
+                        setState(() => employerQuery = value),
+                    onFilterChanged: (value) =>
+                        setState(() => employerFilter = value),
+                    filters: const [
+                      'Semua',
+                      'Terverifikasi',
+                      'Menunggu',
+                      'Ditangguhkan',
+                    ],
+                    emptyMessage: 'Employer tidak ditemukan.',
+                    isEmployer: true,
+                  ),
                 },
               ),
             ],
@@ -248,8 +240,7 @@ class _AdminShellState extends State<AdminShell>
         children: [
           IconButton(
             tooltip: 'Buka menu admin',
-            onPressed: () =>
-                scaffoldKey.currentState?.openDrawer(),
+            onPressed: () => scaffoldKey.currentState?.openDrawer(),
             style: IconButton.styleFrom(
               backgroundColor: lavender.withValues(alpha: 0.8),
               fixedSize: const Size(40, 40),
@@ -281,17 +272,12 @@ class _AdminShellState extends State<AdminShell>
           children: [
             Container(
               width: double.infinity,
-              padding: const EdgeInsets.fromLTRB(
-                22, 22, 14, 22,
-              ),
+              padding: const EdgeInsets.fromLTRB(22, 22, 14, 22),
               decoration: const BoxDecoration(
                 gradient: LinearGradient(
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
-                  colors: [
-                    plum,
-                    Color(0xFF493451),
-                  ],
+                  colors: [plum, Color(0xFF493451)],
                 ),
                 borderRadius: BorderRadius.vertical(
                   bottom: Radius.circular(24),
@@ -316,10 +302,7 @@ class _AdminShellState extends State<AdminShell>
                         tooltip: 'Tutup menu',
                         onPressed: () =>
                             scaffoldKey.currentState?.closeDrawer(),
-                        icon: const Icon(
-                          Icons.close,
-                          color: Colors.white,
-                        ),
+                        icon: const Icon(Icons.close, color: Colors.white),
                       ),
                     ],
                   ),
@@ -336,9 +319,7 @@ class _AdminShellState extends State<AdminShell>
             ),
             Expanded(
               child: ListView(
-                padding: const EdgeInsets.fromLTRB(
-                  14, 18, 14, 22,
-                ),
+                padding: const EdgeInsets.fromLTRB(14, 18, 14, 22),
                 children: [
                   _drawerSectionTitle('MENU ADMIN'),
 
@@ -383,8 +364,7 @@ class _AdminShellState extends State<AdminShell>
                     icon: Icons.person_search_rounded,
                     title: 'Beralih ke Cari Kerja (Hiree)',
                     subtitle: 'Buka menu pencarian kerja',
-                    onTap: () =>
-                        widget.store.setActiveRole('employee'),
+                    onTap: () => widget.store.setActiveRole('employee'),
                   ),
 
                   _drawerItem(
@@ -392,8 +372,7 @@ class _AdminShellState extends State<AdminShell>
                     icon: Icons.business_center_outlined,
                     title: 'Beralih ke Post Kerja (Hirer)',
                     subtitle: 'Buka menu pengelolaan lowongan',
-                    onTap: () =>
-                        widget.store.setActiveRole('employer'),
+                    onTap: () => widget.store.setActiveRole('employer'),
                   ),
 
                   _drawerItem(
@@ -401,8 +380,7 @@ class _AdminShellState extends State<AdminShell>
                     icon: Icons.swap_horiz_rounded,
                     title: 'Menu Pilih Peran',
                     subtitle: 'Kembali ke pilihan peran awal',
-                    onTap: () =>
-                        widget.store.setActiveRole(null),
+                    onTap: () => widget.store.setActiveRole(null),
                   ),
                 ],
               ),
@@ -438,8 +416,7 @@ class _AdminShellState extends State<AdminShell>
     return AnimatedBuilder(
       animation: menuAnimation,
       builder: (context, child) {
-        final begin =
-            (order * 0.07).clamp(0.0, 0.55).toDouble();
+        final begin = (order * 0.07).clamp(0.0, 0.55).toDouble();
 
         final progress = Interval(
           begin,
@@ -468,31 +445,17 @@ class _AdminShellState extends State<AdminShell>
               color: lavender.withValues(alpha: 0.75),
               borderRadius: BorderRadius.circular(12),
             ),
-            child: Icon(
-              icon,
-              color: plum,
-              size: 20,
-            ),
+            child: Icon(icon, color: plum, size: 20),
           ),
           title: Text(
             title,
-            style: const TextStyle(
-              fontSize: 12,
-              fontWeight: FontWeight.w800,
-            ),
+            style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w800),
           ),
           subtitle: Text(
             subtitle,
-            style: const TextStyle(
-              fontSize: 10,
-              color: muted,
-            ),
+            style: const TextStyle(fontSize: 10, color: muted),
           ),
-          trailing: const Icon(
-            Icons.chevron_right,
-            size: 18,
-            color: muted,
-          ),
+          trailing: const Icon(Icons.chevron_right, size: 18, color: muted),
           onTap: () {
             scaffoldKey.currentState?.closeDrawer();
             onTap();
@@ -502,14 +465,8 @@ class _AdminShellState extends State<AdminShell>
     );
   }
 
-
   Widget _adminBottomBar() {
-    const labels = [
-      'Dashboard',
-      'Lowongan',
-      'Employee',
-      'Employer',
-    ];
+    const labels = ['Dashboard', 'Lowongan', 'Employee', 'Employer'];
 
     const icons = [
       Icons.dashboard_outlined,
@@ -528,9 +485,7 @@ class _AdminShellState extends State<AdminShell>
     return Container(
       decoration: BoxDecoration(
         color: const Color(0xFFFBFAFD).withValues(alpha: 0.98),
-        borderRadius: const BorderRadius.vertical(
-          top: Radius.circular(22),
-        ),
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(22)),
         border: Border.all(color: line),
         boxShadow: [
           BoxShadow(
@@ -552,28 +507,20 @@ class _AdminShellState extends State<AdminShell>
                   borderRadius: BorderRadius.circular(16),
                   onTap: () => setState(() => tab = i),
                   child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                      vertical: 2,
-                    ),
+                    padding: const EdgeInsets.symmetric(vertical: 2),
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         AnimatedContainer(
-                          duration: const Duration(
-                            milliseconds: 180,
-                          ),
+                          duration: const Duration(milliseconds: 180),
                           width: 64,
                           height: 32,
                           decoration: BoxDecoration(
-                            color: tab == i
-                                ? lavender
-                                : Colors.transparent,
+                            color: tab == i ? lavender : Colors.transparent,
                             borderRadius: BorderRadius.circular(14),
                           ),
                           child: Icon(
-                            tab == i
-                                ? selectedIcons[i]
-                                : icons[i],
+                            tab == i ? selectedIcons[i] : icons[i],
                             size: 23,
                             color: tab == i ? plum : muted,
                           ),
@@ -622,13 +569,7 @@ class _AdminShellState extends State<AdminShell>
           ),
         ),
         const SizedBox(height: 5),
-        Text(
-          subtitle,
-          style: const TextStyle(
-            fontSize: 12,
-            color: muted,
-          ),
-        ),
+        Text(subtitle, style: const TextStyle(fontSize: 12, color: muted)),
         const SizedBox(height: 20),
         child,
       ],
@@ -681,23 +622,15 @@ class _AdminShellState extends State<AdminShell>
             ],
           ),
           const SizedBox(height: 24),
-          _sectionHeading(
-            'Perlu ditinjau',
-            'Lowongan menunggu persetujuan',
-          ),
+          _sectionHeading('Perlu ditinjau', 'Lowongan menunggu persetujuan'),
           const SizedBox(height: 10),
           ...vacancies
               .where((item) => item.status == 'Menunggu')
               .map(_vacancyCard),
           if (pendingVacancies == 0)
-            _emptyCard(
-              'Tidak ada lowongan yang menunggu review.',
-            ),
+            _emptyCard('Tidak ada lowongan yang menunggu review.'),
           const SizedBox(height: 22),
-          _sectionHeading(
-            'Aktivitas akun',
-            'Ringkasan akun terdaftar',
-          ),
+          _sectionHeading('Aktivitas akun', 'Ringkasan akun terdaftar'),
           const SizedBox(height: 10),
           _summaryRow(
             icon: Icons.person_outline,
@@ -712,22 +645,14 @@ class _AdminShellState extends State<AdminShell>
           const SizedBox(height: 12),
           const Text(
             'Data pada dashboard ini adalah data dummy untuk prototipe frontend.',
-            style: TextStyle(
-              color: muted,
-              fontSize: 11,
-            ),
+            style: TextStyle(color: muted, fontSize: 11),
           ),
         ],
       ),
     );
   }
 
-  Widget _statCard(
-    String label,
-    String value,
-    IconData icon,
-    Color tint,
-  ) {
+  Widget _statCard(String label, String value, IconData icon, Color tint) {
     return Container(
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
@@ -745,11 +670,7 @@ class _AdminShellState extends State<AdminShell>
               color: tint,
               borderRadius: BorderRadius.circular(11),
             ),
-            child: Icon(
-              icon,
-              size: 18,
-              color: plum,
-            ),
+            child: Icon(icon, size: 18, color: plum),
           ),
           Text(
             value,
@@ -763,10 +684,7 @@ class _AdminShellState extends State<AdminShell>
             label,
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
-            style: const TextStyle(
-              fontSize: 11,
-              color: muted,
-            ),
+            style: const TextStyle(fontSize: 11, color: muted),
           ),
         ],
       ),
@@ -787,8 +705,7 @@ class _AdminShellState extends State<AdminShell>
           item.id.toLowerCase().contains(query);
 
       final matchesFilter =
-          vacancyFilter == 'Semua' ||
-          item.status == vacancyFilter;
+          vacancyFilter == 'Semua' || item.status == vacancyFilter;
 
       return matchesQuery && matchesFilter;
     }).toList();
@@ -800,8 +717,7 @@ class _AdminShellState extends State<AdminShell>
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           TextField(
-            onChanged: (value) =>
-                setState(() => vacancyQuery = value),
+            onChanged: (value) => setState(() => vacancyQuery = value),
             decoration: const InputDecoration(
               hintText: 'Cari posisi, perusahaan, atau ID...',
               prefixIcon: Icon(Icons.search),
@@ -809,15 +725,9 @@ class _AdminShellState extends State<AdminShell>
           ),
           const SizedBox(height: 12),
           _filterChips(
-            values: const [
-              'Semua',
-              'Menunggu',
-              'Aktif',
-              'Ditolak',
-            ],
+            values: const ['Semua', 'Menunggu', 'Aktif', 'Ditolak'],
             selected: vacancyFilter,
-            onSelected: (value) =>
-                setState(() => vacancyFilter = value),
+            onSelected: (value) => setState(() => vacancyFilter = value),
           ),
           const SizedBox(height: 14),
           _resultCount(filtered.length),
@@ -856,10 +766,7 @@ class _AdminShellState extends State<AdminShell>
                     const SizedBox(height: 4),
                     Text(
                       '${item.company} · ${item.location}',
-                      style: const TextStyle(
-                        fontSize: 11,
-                        color: muted,
-                      ),
+                      style: const TextStyle(fontSize: 11, color: muted),
                     ),
                   ],
                 ),
@@ -886,24 +793,21 @@ class _AdminShellState extends State<AdminShell>
                 _actionButton(
                   label: 'Setujui',
                   icon: Icons.check_rounded,
-                  onPressed: () =>
-                      _setVacancyStatus(item, 'Aktif'),
+                  onPressed: () => _setVacancyStatus(item, 'Aktif'),
                 ),
               if (item.status != 'Ditolak')
                 _actionButton(
                   label: 'Tolak',
                   icon: Icons.close_rounded,
                   outlined: true,
-                  onPressed: () =>
-                      _setVacancyStatus(item, 'Ditolak'),
+                  onPressed: () => _setVacancyStatus(item, 'Ditolak'),
                 ),
               if (item.status != 'Aktif')
                 _actionButton(
                   label: 'Aktifkan',
                   icon: Icons.publish_rounded,
                   outlined: true,
-                  onPressed: () =>
-                      _setVacancyStatus(item, 'Aktif'),
+                  onPressed: () => _setVacancyStatus(item, 'Aktif'),
                 ),
               _actionButton(
                 label: 'Hapus',
@@ -949,8 +853,7 @@ class _AdminShellState extends State<AdminShell>
           item.id.toLowerCase().contains(q) ||
           item.detail.toLowerCase().contains(q);
 
-      final matchesFilter =
-          filter == 'Semua' || item.status == filter;
+      final matchesFilter = filter == 'Semua' || item.status == filter;
 
       return matchesQuery && matchesFilter;
     }).toList();
@@ -982,21 +885,13 @@ class _AdminShellState extends State<AdminShell>
           if (filtered.isEmpty)
             _emptyCard(emptyMessage)
           else
-            ...filtered.map(
-              (item) => _userCard(
-                item,
-                isEmployer: isEmployer,
-              ),
-            ),
+            ...filtered.map((item) => _userCard(item, isEmployer: isEmployer)),
         ],
       ),
     );
   }
 
-  Widget _userCard(
-    _AdminUser item, {
-    required bool isEmployer,
-  }) {
+  Widget _userCard(_AdminUser item, {required bool isEmployer}) {
     return Container(
       margin: const EdgeInsets.only(bottom: 10),
       padding: const EdgeInsets.all(14),
@@ -1010,9 +905,7 @@ class _AdminShellState extends State<AdminShell>
                 backgroundColor: lavender,
                 foregroundColor: plum,
                 child: Icon(
-                  isEmployer
-                      ? Icons.business_rounded
-                      : Icons.person_rounded,
+                  isEmployer ? Icons.business_rounded : Icons.person_rounded,
                 ),
               ),
               const SizedBox(width: 10),
@@ -1029,10 +922,7 @@ class _AdminShellState extends State<AdminShell>
                     ),
                     Text(
                       item.email,
-                      style: const TextStyle(
-                        fontSize: 11,
-                        color: muted,
-                      ),
+                      style: const TextStyle(fontSize: 11, color: muted),
                     ),
                   ],
                 ),
@@ -1041,20 +931,11 @@ class _AdminShellState extends State<AdminShell>
             ],
           ),
           const SizedBox(height: 10),
-          Text(
-            item.detail,
-            style: const TextStyle(
-              fontSize: 12,
-              color: muted,
-            ),
-          ),
+          Text(item.detail, style: const TextStyle(fontSize: 12, color: muted)),
           const SizedBox(height: 8),
           Text(
             'ID: ${item.id}',
-            style: const TextStyle(
-              fontSize: 10,
-              color: muted,
-            ),
+            style: const TextStyle(fontSize: 10, color: muted),
           ),
           const SizedBox(height: 12),
           Wrap(
@@ -1065,8 +946,7 @@ class _AdminShellState extends State<AdminShell>
                 _actionButton(
                   label: 'Verifikasi',
                   icon: Icons.verified_outlined,
-                  onPressed: () =>
-                      _setUserStatus(item, 'Terverifikasi'),
+                  onPressed: () => _setUserStatus(item, 'Terverifikasi'),
                 ),
               if (item.status == 'Ditangguhkan')
                 _actionButton(
@@ -1082,15 +962,13 @@ class _AdminShellState extends State<AdminShell>
                   label: 'Tangguhkan',
                   icon: Icons.block_outlined,
                   outlined: true,
-                  onPressed: () =>
-                      _setUserStatus(item, 'Ditangguhkan'),
+                  onPressed: () => _setUserStatus(item, 'Ditangguhkan'),
                 ),
               _actionButton(
                 label: 'Detail',
                 icon: Icons.visibility_outlined,
                 outlined: true,
-                onPressed: () =>
-                    _showUserDetails(item, isEmployer),
+                onPressed: () => _showUserDetails(item, isEmployer),
               ),
             ],
           ),
@@ -1123,9 +1001,7 @@ class _AdminShellState extends State<AdminShell>
               labelStyle: TextStyle(
                 fontSize: 11,
                 color: isSelected ? plum : muted,
-                fontWeight: isSelected
-                    ? FontWeight.w800
-                    : FontWeight.w500,
+                fontWeight: isSelected ? FontWeight.w800 : FontWeight.w500,
               ),
             ),
           );
@@ -1138,10 +1014,7 @@ class _AdminShellState extends State<AdminShell>
   // GENERAL WIDGETS
   // ============================================================
 
-  Widget _sectionHeading(
-    String title,
-    String subtitle,
-  ) {
+  Widget _sectionHeading(String title, String subtitle) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -1153,13 +1026,7 @@ class _AdminShellState extends State<AdminShell>
             color: ink,
           ),
         ),
-        Text(
-          subtitle,
-          style: const TextStyle(
-            fontSize: 11,
-            color: muted,
-          ),
-        ),
+        Text(subtitle, style: const TextStyle(fontSize: 11, color: muted)),
       ],
     );
   }
@@ -1176,10 +1043,7 @@ class _AdminShellState extends State<AdminShell>
           Icon(icon, size: 19, color: muted),
           const SizedBox(width: 10),
           Expanded(
-            child: Text(
-              label,
-              style: const TextStyle(color: ink),
-            ),
+            child: Text(label, style: const TextStyle(color: ink)),
           ),
           Text(
             value,
@@ -1213,31 +1077,19 @@ class _AdminShellState extends State<AdminShell>
       child: Text(
         message,
         textAlign: TextAlign.center,
-        style: const TextStyle(
-          color: muted,
-          fontSize: 12,
-        ),
+        style: const TextStyle(color: muted, fontSize: 12),
       ),
     );
   }
 
   Widget _smallTag(String text) {
     return Container(
-      padding: const EdgeInsets.symmetric(
-        horizontal: 8,
-        vertical: 5,
-      ),
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
       decoration: BoxDecoration(
         color: canvas,
         borderRadius: BorderRadius.circular(8),
       ),
-      child: Text(
-        text,
-        style: const TextStyle(
-          fontSize: 10,
-          color: muted,
-        ),
-      ),
+      child: Text(text, style: const TextStyle(fontSize: 10, color: muted)),
     );
   }
 
@@ -1269,10 +1121,7 @@ class _AdminShellState extends State<AdminShell>
     }
 
     return Container(
-      padding: const EdgeInsets.symmetric(
-        horizontal: 9,
-        vertical: 5,
-      ),
+      padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 5),
       decoration: BoxDecoration(
         color: background,
         borderRadius: BorderRadius.circular(20),
@@ -1304,16 +1153,10 @@ class _AdminShellState extends State<AdminShell>
       return OutlinedButton.icon(
         onPressed: onPressed,
         icon: Icon(icon, size: 14),
-        label: Text(
-          label,
-          style: buttonTextStyle,
-        ),
+        label: Text(label, style: buttonTextStyle),
         style: OutlinedButton.styleFrom(
           foregroundColor: plum,
-          padding: const EdgeInsets.symmetric(
-            horizontal: 10,
-            vertical: 8,
-          ),
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
           textStyle: buttonTextStyle,
           visualDensity: VisualDensity.compact,
           side: const BorderSide(color: line),
@@ -1324,15 +1167,9 @@ class _AdminShellState extends State<AdminShell>
     return FilledButton.icon(
       onPressed: onPressed,
       icon: Icon(icon, size: 14),
-      label: Text(
-        label,
-        style: buttonTextStyle,
-      ),
+      label: Text(label, style: buttonTextStyle),
       style: FilledButton.styleFrom(
-        padding: const EdgeInsets.symmetric(
-          horizontal: 10,
-          vertical: 8,
-        ),
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
         textStyle: buttonTextStyle,
         visualDensity: VisualDensity.compact,
       ),
@@ -1351,20 +1188,13 @@ class _AdminShellState extends State<AdminShell>
   // ADMIN ACTIONS
   // ============================================================
 
-  Future<void> _setVacancyStatus(
-    _AdminVacancy item,
-    String newStatus,
-  ) async {
+  Future<void> _setVacancyStatus(_AdminVacancy item, String newStatus) async {
     setState(() => item.status = newStatus);
 
-    _message(
-      '${item.title}: status diubah menjadi $newStatus.',
-    );
+    _message('${item.title}: status diubah menjadi $newStatus.');
   }
 
-  Future<void> _confirmDeleteVacancy(
-    _AdminVacancy item,
-  ) async {
+  Future<void> _confirmDeleteVacancy(_AdminVacancy item) async {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (dialogContext) => AlertDialog(
@@ -1374,13 +1204,11 @@ class _AdminShellState extends State<AdminShell>
         ),
         actions: [
           TextButton(
-            onPressed: () =>
-                Navigator.pop(dialogContext, false),
+            onPressed: () => Navigator.pop(dialogContext, false),
             child: const Text('Batal'),
           ),
           FilledButton(
-            onPressed: () =>
-                Navigator.pop(dialogContext, true),
+            onPressed: () => Navigator.pop(dialogContext, true),
             child: const Text('Hapus'),
           ),
         ],
@@ -1390,64 +1218,43 @@ class _AdminShellState extends State<AdminShell>
     if (confirmed == true && mounted) {
       setState(() => vacancies.remove(item));
 
-      _message(
-        'Lowongan berhasil dihapus dari data dummy.',
-      );
+      _message('Lowongan berhasil dihapus dari data dummy.');
     }
   }
 
-  Future<void> _setUserStatus(
-    _AdminUser item,
-    String newStatus,
-  ) async {
+  Future<void> _setUserStatus(_AdminUser item, String newStatus) async {
     setState(() => item.status = newStatus);
 
-    _message(
-      '${item.name}: status diubah menjadi $newStatus.',
-    );
+    _message('${item.name}: status diubah menjadi $newStatus.');
   }
 
-  void _showUserDetails(
-    _AdminUser item,
-    bool isEmployer,
-  ) {
+  void _showUserDetails(_AdminUser item, bool isEmployer) {
     showDialog<void>(
       context: context,
       builder: (dialogContext) => AlertDialog(
-        title: Text(
-          isEmployer ? 'Detail Employer' : 'Detail Employee',
-        ),
+        title: Text(isEmployer ? 'Detail Employer' : 'Detail Employee'),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             _detailLine('ID', item.id),
-            _detailLine(
-              isEmployer ? 'Perusahaan' : 'Nama',
-              item.name,
-            ),
+            _detailLine(isEmployer ? 'Perusahaan' : 'Nama', item.name),
             _detailLine('Email', item.email),
             _detailLine(
-              isEmployer
-                  ? 'Industri / Lokasi'
-                  : 'Keahlian / Lokasi',
+              isEmployer ? 'Industri / Lokasi' : 'Keahlian / Lokasi',
               item.detail,
             ),
             _detailLine('Status', item.status),
             const SizedBox(height: 10),
             const Text(
               'Informasi ini merupakan data contoh, bukan data akun terdaftar.',
-              style: TextStyle(
-                color: muted,
-                fontSize: 10,
-              ),
+              style: TextStyle(color: muted, fontSize: 10),
             ),
           ],
         ),
         actions: [
           TextButton(
-            onPressed: () =>
-                Navigator.pop(dialogContext),
+            onPressed: () => Navigator.pop(dialogContext),
             child: const Text('Tutup'),
           ),
         ],
@@ -1475,10 +1282,7 @@ class _AdminShellState extends State<AdminShell>
               const SizedBox(height: 10),
               const Text(
                 'Informasi ini merupakan data contoh untuk prototipe frontend.',
-                style: TextStyle(
-                  color: muted,
-                  fontSize: 10,
-                ),
+                style: TextStyle(color: muted, fontSize: 10),
               ),
             ],
           ),
@@ -1493,28 +1297,16 @@ class _AdminShellState extends State<AdminShell>
     );
   }
 
-  Widget _detailLine(
-    String label,
-    String value,
-  ) {
+  Widget _detailLine(String label, String value) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 9),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            label,
-            style: const TextStyle(
-              color: muted,
-              fontSize: 10,
-            ),
-          ),
+          Text(label, style: const TextStyle(color: muted, fontSize: 10)),
           Text(
             value,
-            style: const TextStyle(
-              color: ink,
-              fontWeight: FontWeight.w700,
-            ),
+            style: const TextStyle(color: ink, fontWeight: FontWeight.w700),
           ),
         ],
       ),
@@ -1524,9 +1316,7 @@ class _AdminShellState extends State<AdminShell>
   void _message(String message) {
     ScaffoldMessenger.of(context)
       ..hideCurrentSnackBar()
-      ..showSnackBar(
-        SnackBar(content: Text(message)),
-      );
+      ..showSnackBar(SnackBar(content: Text(message)));
   }
 }
 

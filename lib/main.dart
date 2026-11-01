@@ -356,22 +356,13 @@ class _AppRootState extends State<AppRoot> with WidgetsBindingObserver {
       openPendingReminder();
       switch (widget.store.activeRole) {
         case 'admin':
-          return AdminShell(
-            store: widget.store,
-            cloud: widget.cloud,
-          );
+          return AdminShell(store: widget.store, cloud: widget.cloud);
 
         case 'employer':
-          return EmployerShell(
-            store: widget.store,
-            cloud: widget.cloud,
-          );
+          return EmployerShell(store: widget.store, cloud: widget.cloud);
 
         default:
-          return AppShell(
-            store: widget.store,
-            cloud: widget.cloud,
-          );
+          return AppShell(store: widget.store, cloud: widget.cloud);
       }
     },
   );

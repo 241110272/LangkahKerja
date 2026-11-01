@@ -15,23 +15,24 @@ void main() {
       ..addFont(rootBundle.load('assets/fonts/Manrope.ttf'));
     await font.load();
   });
-  testWidgets('menu pilih peran menggantikan onboarding dan memilih cari kerja', (
-    tester,
-  ) async {
-    SharedPreferences.setMockInitialValues({});
-    final prefs = await SharedPreferences.getInstance();
-    final store = JobStore(prefs);
-    await tester.pumpWidget(LangkahKerjaApp(store: store));
-    await tester.pumpAndSettle();
-    expect(find.text('Cari Kerja (Employee)'), findsWidgets);
-    await tester.tap(find.text('Cari Kerja (Employee)'));
-    await tester.pumpAndSettle();
-    expect(store.onboardingComplete, isTrue);
-    expect(store.activeRole, 'employee');
-    expect((JobStore(prefs)..restore()).onboardingComplete, isTrue);
-    expect(find.text('Eksplorasi'), findsOneWidget);
-    expect(tester.takeException(), isNull);
-  });
+  testWidgets(
+    'menu pilih peran menggantikan onboarding dan memilih cari kerja',
+    (tester) async {
+      SharedPreferences.setMockInitialValues({});
+      final prefs = await SharedPreferences.getInstance();
+      final store = JobStore(prefs);
+      await tester.pumpWidget(LangkahKerjaApp(store: store));
+      await tester.pumpAndSettle();
+      expect(find.text('Cari Kerja (Employee)'), findsWidgets);
+      await tester.tap(find.text('Cari Kerja (Employee)'));
+      await tester.pumpAndSettle();
+      expect(store.onboardingComplete, isTrue);
+      expect(store.activeRole, 'employee');
+      expect((JobStore(prefs)..restore()).onboardingComplete, isTrue);
+      expect(find.text('Eksplorasi'), findsOneWidget);
+      expect(tester.takeException(), isNull);
+    },
+  );
   testWidgets('menu pilih peran dapat memilih post kerja employer', (
     tester,
   ) async {
