@@ -27,6 +27,10 @@ class JobStore extends ChangeNotifier {
       demoMode = false,
       hasMore = false,
       onboardingComplete = false;
+  String? activeRole = 'employee';
+  final Map<String, Job> employerJobs = {};
+  final List<Map<String, dynamic>> employerApplicants = [];
+  Map<String, String> companyProfile = {};
   bool cloudDirty = false;
   int page = 0, cloudRevision = 0;
   String? error, storageError, ownerId;
@@ -58,6 +62,37 @@ class JobStore extends ChangeNotifier {
         lastCloudSync = DateTime.tryParse('${data['lastCloudSync']}');
         onboardingComplete =
             data['onboardingComplete'] == true || !data.containsKey('schema');
+        activeRole = data['activeRole'] as String?;
+        if (onboardingComplete && activeRole == null) {
+          activeRole = 'employee';
+        }
+        if (data['companyProfile'] is Map) {
+          companyProfile = Map<String, String>.from(
+            (data['companyProfile'] as Map).map((k, v) => MapEntry('$k', '$v')),
+          );
+        }
+        if (data['employerJobs'] is List) {
+          try {
+            final empJobs = _readJobs(data['employerJobs']);
+            employerJobs
+              ..clear()
+              ..addAll(empJobs);
+            for (final j in empJobs.values) {
+              if (!jobs.any((x) => x.id == j.id)) {
+                jobs.insert(0, j);
+              }
+            }
+          } catch (_) {}
+        }
+        if (data['employerApplicants'] is List) {
+          employerApplicants
+            ..clear()
+            ..addAll(
+              (data['employerApplicants'] as List).whereType<Map>().map(
+                (m) => Map<String, dynamic>.from(m),
+              ),
+            );
+        }
       } catch (_) {
         _corruptSnapshot = raw;
         storageError =
@@ -211,6 +246,10 @@ class JobStore extends ChangeNotifier {
     'recentSearches': List.of(recentSearches),
     'savedSearches': savedSearches.map((e) => e.toJson()).toList(),
     'checklist': completedChecklist.toList(),
+    'activeRole': activeRole,
+    'employerJobs': employerJobs.values.map((j) => j.toJson()).toList(),
+    'employerApplicants': employerApplicants,
+    'companyProfile': companyProfile,
   };
 
   Future<void> persist({bool markDirty = true}) {
@@ -221,6 +260,7 @@ class JobStore extends ChangeNotifier {
       'cloudRevision': cloudRevision,
       'cloudDirty': cloudDirty,
       'onboardingComplete': onboardingComplete,
+      'activeRole': activeRole,
       'lastCloudSync': lastCloudSync?.toUtc().toIso8601String(),
     });
     final next = _writes.then((_) async {
@@ -255,6 +295,7 @@ class JobStore extends ChangeNotifier {
       final result = await api.fetch(target);
       jobs = {
         for (final j in [
+          ...employerJobs.values,
           ...(more && !demoMode ? jobs : <Job>[]),
           ...result.jobs,
         ])
@@ -291,12 +332,129 @@ class JobStore extends ChangeNotifier {
     demoMode = true;
     hasMore = false;
     error = null;
+    if (employerJobs.isEmpty) {
+      final sampleJob = Job(
+        id: 'demo-employer-mobile',
+        title: 'Senior Mobile Engineer (Flutter)',
+        company: companyProfile['name']?.isNotEmpty == true
+            ? companyProfile['name']!
+            : 'TechNusantara Studio',
+        location: 'Jakarta Selatan, DKI Jakarta (Hybrid)',
+        remote: true,
+        demo: true,
+        jobTypes: const ['Penuh Waktu'],
+        tags: const ['Flutter', 'Dart', 'BLoC', 'REST API'],
+        salary: 'Rp 14.000.000 - Rp 20.000.000 / bulan',
+        source: 'Pemberi Kerja LangkahKerja',
+        url: 'https://technusantara.id/careers',
+        description:
+            '<h3>Tentang Posisi</h3><p>Kami mencari Senior Mobile Engineer yang berpengalaman dalam membangun aplikasi Flutter berkinerja tinggi dan scalable.</p><h3>Tanggung Jawab</h3><ul><li>Merancang dan mengimplementasikan fitur baru aplikasi mobile.</li><li>Mengoptimalkan performa, reliabilitas, dan UI responsif.</li><li>Berkolaborasi dengan desainer UI/UX dan backend developer.</li></ul><h3>Persyaratan</h3><ul><li>Pengalaman minimal 3 tahun dengan Flutter & Dart.</li><li>Memahami arsitektur state management yang baik.</li><li>Memiliki portofolio aplikasi yang pernah dirilis di App Store / Play Store.</li></ul>',
+      );
+      employerJobs[sampleJob.id] = sampleJob;
+    }
+    for (final ej in employerJobs.values) {
+      if (!jobs.any((j) => j.id == ej.id)) {
+        jobs.insert(0, ej);
+      }
+    }
+    if (employerApplicants.isEmpty) {
+      employerApplicants.add({
+        'id': 'cand-1',
+        'jobId': 'demo-employer-mobile',
+        'jobTitle': 'Senior Mobile Engineer (Flutter)',
+        'candidateName': 'Dimas Pratama',
+        'candidateEmail': 'dimas.pratama@email.com',
+        'candidatePhone': '081234567890',
+        'status': 'Wawancara',
+        'appliedAt': DateTime.now()
+            .subtract(const Duration(days: 2))
+            .toIso8601String(),
+        'notes':
+            'Portofolio Flutter sangat bagus. Jadwal interview technical hari Selasa.',
+      });
+      employerApplicants.add({
+        'id': 'cand-2',
+        'jobId': 'demo-employer-mobile',
+        'jobTitle': 'Senior Mobile Engineer (Flutter)',
+        'candidateName': 'Siti Rahmawati',
+        'candidateEmail': 'siti.rahma@email.com',
+        'candidatePhone': '085712345678',
+        'status': 'Ditinjau',
+        'appliedAt': DateTime.now()
+            .subtract(const Duration(days: 1))
+            .toIso8601String(),
+        'notes': 'Pengalaman 4 tahun Flutter & REST API di startup.',
+      });
+    }
     notifyListeners();
   }
 
   Future<void> completeOnboarding() async {
     onboardingComplete = true;
+    activeRole ??= 'employee';
     await persist(markDirty: false);
+  }
+
+  Future<void> setActiveRole(String? role) async {
+    activeRole = role;
+    onboardingComplete = role != null;
+    notifyListeners();
+    await persist(markDirty: false);
+  }
+
+  Future<void> postEmployerJob(Job job) async {
+    employerJobs[job.id] = job;
+    jobs.removeWhere((j) => j.id == job.id);
+    jobs.insert(0, job);
+    notifyListeners();
+    await persist();
+  }
+
+  Future<void> updateEmployerJob(Job job) async {
+    employerJobs[job.id] = job;
+    final index = jobs.indexWhere((j) => j.id == job.id);
+    if (index != -1) {
+      jobs[index] = job;
+    } else {
+      jobs.insert(0, job);
+    }
+    notifyListeners();
+    await persist();
+  }
+
+  Future<void> deleteEmployerJob(String id) async {
+    employerJobs.remove(id);
+    jobs.removeWhere((j) => j.id == id);
+    employerApplicants.removeWhere((a) => a['jobId'] == id);
+    notifyListeners();
+    await persist();
+  }
+
+  Future<void> addEmployerApplicant(Map<String, dynamic> applicant) async {
+    employerApplicants.insert(0, applicant);
+    notifyListeners();
+    await persist();
+  }
+
+  Future<void> updateApplicantStatus(String applicantId, String status) async {
+    final idx = employerApplicants.indexWhere((a) => a['id'] == applicantId);
+    if (idx != -1) {
+      employerApplicants[idx]['status'] = status;
+      notifyListeners();
+      await persist();
+    }
+  }
+
+  Future<void> deleteEmployerApplicant(String applicantId) async {
+    employerApplicants.removeWhere((a) => a['id'] == applicantId);
+    notifyListeners();
+    await persist();
+  }
+
+  Future<void> saveCompanyProfile(Map<String, String> profile) async {
+    companyProfile = Map.of(profile);
+    notifyListeners();
+    await persist();
   }
 
   Future<void> toggleSave(Job job) async {
@@ -431,6 +589,10 @@ class JobStore extends ChangeNotifier {
     await persistence.clear();
     _corruptSnapshot = null;
     _apply({});
+    employerJobs.clear();
+    employerApplicants.clear();
+    companyProfile.clear();
+    activeRole = null;
     if (forgetAccount) {
       ownerId = null;
       cloudRevision = 0;

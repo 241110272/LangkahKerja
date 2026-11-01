@@ -179,6 +179,48 @@ void main() {
     expect(prefs.getString('langkahkerja.v1'), isNull);
     expect(store.exportBackup(), isNot(contains('Rahasia')));
   });
+  test('employer dapat pasang lowongan, kelola pelamar, dan memulihkan data', () async {
+    final prefs = await SharedPreferences.getInstance();
+    final store = JobStore(prefs);
+    const employerJob = Job(
+      id: 'emp-flutter-lead',
+      title: 'Lead Flutter Developer',
+      company: 'Nusantara Digital Inc',
+      location: 'Bandung (Remote)',
+      remote: true,
+      description: 'Membangun aplikasi mobile',
+      url: 'https://nusantara.id/career',
+      salary: 'Rp 18.000.000',
+    );
+    await store.postEmployerJob(employerJob);
+    await store.addEmployerApplicant({
+      'id': 'cand-101',
+      'jobId': employerJob.id,
+      'jobTitle': employerJob.title,
+      'candidateName': 'Ahmad Fauzi',
+      'status': 'Ditinjau',
+    });
+    await store.saveCompanyProfile({
+      'name': 'Nusantara Digital Inc',
+      'industry': 'Software House',
+    });
+    expect(store.employerJobs.length, 1);
+    expect(store.jobs.first.id, employerJob.id);
+    expect(store.employerApplicants.length, 1);
+
+    final restored = JobStore(prefs)..restore();
+    expect(restored.employerJobs.containsKey(employerJob.id), isTrue);
+    expect(restored.employerJobs[employerJob.id]?.title, 'Lead Flutter Developer');
+    expect(restored.employerApplicants.first['candidateName'], 'Ahmad Fauzi');
+    expect(restored.companyProfile['name'], 'Nusantara Digital Inc');
+
+    await restored.updateApplicantStatus('cand-101', 'Wawancara');
+    expect(restored.employerApplicants.first['status'], 'Wawancara');
+
+    await restored.deleteEmployerJob(employerJob.id);
+    expect(restored.employerJobs, isEmpty);
+    expect(restored.jobs.any((j) => j.id == employerJob.id), isFalse);
+  });
 }
 
 class FakeApi implements JobApi {
