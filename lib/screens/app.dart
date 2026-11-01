@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart' show ScrollCacheExtent;
 import '../main.dart';
 import '../models/job.dart';
 import '../services/job_store.dart';
 import '../widgets/brand.dart';
 import '../widgets/career_banner.dart';
 import '../widgets/job_card.dart';
+import '../widgets/role_switcher.dart';
 import '../models/user_data.dart';
 import '../services/cloud.dart';
 import 'settings.dart';
@@ -82,120 +84,7 @@ class _AppShellState extends State<AppShell>
                   const SizedBox(width: 8),
                   const Brand(),
                   const Spacer(),
-                  PopupMenuButton<String>(
-                    tooltip: '',
-                    color: Colors.white,
-                    surfaceTintColor: Colors.transparent,
-                    elevation: 6,
-                    shadowColor: plum.withValues(alpha: 0.12),
-                    offset: const Offset(0, 8),
-
-                    // FIX: Match interaction effect to button's rounded corners.
-                    borderRadius: BorderRadius.circular(12),
-                    clipBehavior: Clip.antiAlias,
-
-                    // Dropdown shape
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(14),
-                      side: const BorderSide(color: line),
-                    ),
-
-                    onSelected: (role) => widget.store.setActiveRole(role),
-
-                    itemBuilder: (context) => const [
-                      PopupMenuItem(
-                        value: 'employee',
-                        height: 50,
-                        child: Row(
-                          children: [
-                            Icon(
-                              Icons.person_search_rounded,
-                              size: 19,
-                              color: plum,
-                            ),
-                            SizedBox(width: 10),
-                            Text(
-                              'Hiree',
-                              style: TextStyle(fontSize: 12),
-                            ),
-                          ],
-                        ),
-                      ),
-                      PopupMenuItem(
-                        value: 'employer',
-                        height: 50,
-                        child: Row(
-                          children: [
-                            Icon(
-                              Icons.business_center_outlined,
-                              size: 19,
-                              color: plum,
-                            ),
-                            SizedBox(width: 10),
-                            Text(
-                              'Hirer',
-                              style: TextStyle(fontSize: 12),
-                            ),
-                          ],
-                        ),
-                      ),
-                      PopupMenuItem(
-                        value: 'admin',
-                        height: 50,
-                        child: Row(
-                          children: [
-                            Icon(
-                              Icons.admin_panel_settings_outlined,
-                              size: 19,
-                              color: plum,
-                            ),
-                            SizedBox(width: 10),
-                            Text(
-                              'Admin',
-                              style: TextStyle(fontSize: 12),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-
-                    // Switch Mode button
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 11,
-                        vertical: 9,
-                      ),
-                      decoration: BoxDecoration(
-                        color: lavender.withValues(alpha: 0.7),
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: const Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Icon(
-                            Icons.swap_horiz_rounded,
-                            size: 16,
-                            color: plum,
-                          ),
-                          SizedBox(width: 5),
-                          Text(
-                            'Switch Mode',
-                            style: TextStyle(
-                              fontSize: 11,
-                              fontWeight: FontWeight.w700,
-                              color: plum,
-                            ),
-                          ),
-                          SizedBox(width: 3),
-                          Icon(
-                            Icons.keyboard_arrow_down_rounded,
-                            size: 16,
-                            color: plum,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
+                  RoleSwitcher(store: store),
                 ],
               ),
             ),
@@ -284,7 +173,8 @@ class _AppShellState extends State<AppShell>
             ),
             Expanded(
               child: ListView(
-                padding: const EdgeInsets.fromLTRB(14, 18, 14, 22),
+                scrollCacheExtent: const ScrollCacheExtent.pixels(800),
+                padding: const EdgeInsets.fromLTRB(14, 18, 14, 64),
                 children: [
                   _drawerHeading('PERAN & MODE'),
                   _drawerEntry(
@@ -309,6 +199,13 @@ class _AppShellState extends State<AppShell>
                     title: 'Peluang',
                     subtitle: 'Temukan lowongan yang sesuai',
                     onTap: () => setState(() => tab = 1),
+                  ),
+                  _drawerEntry(
+                    order: order++,
+                    icon: Icons.person_outline_rounded,
+                    title: 'Profil & preferensi',
+                    subtitle: 'Akun, minat, dan privasi',
+                    onTap: () => setState(() => tab = 3),
                   ),
                   const SizedBox(height: 12),
                   _drawerHeading('SIAPKAN BERKAS'),
@@ -351,13 +248,6 @@ class _AppShellState extends State<AppShell>
                     title: 'Perjalanan karier',
                     subtitle: 'Agenda, progres, dan jejak lamaran',
                     onTap: () => _pushTool(CareerJourney(store: store)),
-                  ),
-                  _drawerEntry(
-                    order: order++,
-                    icon: Icons.person_outline_rounded,
-                    title: 'Profil & preferensi',
-                    subtitle: 'Akun, minat, dan privasi',
-                    onTap: () => setState(() => tab = 3),
                   ),
                 ],
               ),
@@ -407,6 +297,8 @@ class _AppShellState extends State<AppShell>
     child: Padding(
       padding: const EdgeInsets.only(bottom: 3),
       child: ListTile(
+        dense: true,
+        visualDensity: const VisualDensity(vertical: -1),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         leading: Container(
           width: 40,

@@ -4,6 +4,7 @@ import '../models/job.dart';
 import '../services/job_store.dart';
 import '../services/cloud.dart';
 import '../widgets/brand.dart';
+import '../widgets/role_switcher.dart';
 import '../widgets/job_card.dart';
 import 'detail.dart';
 import 'privacy.dart';
@@ -135,121 +136,7 @@ class _EmployerShellState extends State<EmployerShell>
                     const Brand(),
                     const SizedBox(width: 8),
                     const Spacer(),
-                    // Quick switch button to Employee mode
-                    PopupMenuButton<String>(
-                      tooltip: '',
-                      color: Colors.white,
-                      surfaceTintColor: Colors.transparent,
-                      elevation: 6,
-                      shadowColor: plum.withValues(alpha: 0.12),
-                      offset: const Offset(0, 8),
-
-                      // FIX: Match interaction effect to button's rounded corners.
-                      borderRadius: BorderRadius.circular(12),
-                      clipBehavior: Clip.antiAlias,
-
-                      // Dropdown shape
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(14),
-                        side: const BorderSide(color: line),
-                      ),
-
-                      onSelected: (role) => widget.store.setActiveRole(role),
-
-                      itemBuilder: (context) => const [
-                        PopupMenuItem(
-                          value: 'employee',
-                          height: 50,
-                          child: Row(
-                            children: [
-                              Icon(
-                                Icons.person_search_rounded,
-                                size: 19,
-                                color: plum,
-                              ),
-                              SizedBox(width: 10),
-                              Text(
-                                'Hiree',
-                                style: TextStyle(fontSize: 12),
-                              ),
-                            ],
-                          ),
-                        ),
-                        PopupMenuItem(
-                          value: 'employer',
-                          height: 50,
-                          child: Row(
-                            children: [
-                              Icon(
-                                Icons.business_center_outlined,
-                                size: 19,
-                                color: plum,
-                              ),
-                              SizedBox(width: 10),
-                              Text(
-                                'Hirer',
-                                style: TextStyle(fontSize: 12),
-                              ),
-                            ],
-                          ),
-                        ),
-                        PopupMenuItem(
-                          value: 'admin',
-                          height: 50,
-                          child: Row(
-                            children: [
-                              Icon(
-                                Icons.admin_panel_settings_outlined,
-                                size: 19,
-                                color: plum,
-                              ),
-                              SizedBox(width: 10),
-                              Text(
-                                'Admin',
-                                style: TextStyle(fontSize: 12),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-
-                      // Switch Mode button
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 11,
-                          vertical: 9,
-                        ),
-                        decoration: BoxDecoration(
-                          color: lavender.withValues(alpha: 0.7),
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: const Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Icon(
-                              Icons.swap_horiz_rounded,
-                              size: 16,
-                              color: plum,
-                            ),
-                            SizedBox(width: 5),
-                            Text(
-                              'Switch Mode',
-                              style: TextStyle(
-                                fontSize: 11,
-                                fontWeight: FontWeight.w700,
-                                color: plum,
-                              ),
-                            ),
-                            SizedBox(width: 3),
-                            Icon(
-                              Icons.keyboard_arrow_down_rounded,
-                              size: 16,
-                              color: plum,
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
+                    RoleSwitcher(store: store),
                   ],
                 ),
               ),
@@ -1520,7 +1407,7 @@ class _EmployerShellState extends State<EmployerShell>
                 children: [
                   if (store.employerJobs.isNotEmpty) ...[
                     DropdownButtonFormField<String>(
-                      value: targetJobId,
+                      initialValue: targetJobId,
                       isExpanded: true,
                       decoration: const InputDecoration(labelText: 'Lowongan'),
                       items: [
@@ -1567,7 +1454,7 @@ class _EmployerShellState extends State<EmployerShell>
                   ),
                   const SizedBox(height: 10),
                   DropdownButtonFormField<String>(
-                    value: initialStatus,
+                    initialValue: initialStatus,
                     isExpanded: true,
                     decoration: const InputDecoration(labelText: 'Status Awal'),
                     items: const [
@@ -1652,18 +1539,27 @@ class _EmployerShellState extends State<EmployerShell>
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            for (final st in ['Ditinjau', 'Wawancara', 'Diterima', 'Ditolak'])
-              RadioListTile<String>(
-                title: Text(st),
-                value: st,
-                groupValue: applicant['status'],
-                onChanged: (v) {
-                  if (v != null) {
-                    store.updateApplicantStatus(applicant['id'], v);
-                    Navigator.pop(ctx);
-                  }
-                },
+            RadioGroup<String>(
+              groupValue: applicant['status'] as String?,
+              onChanged: (value) {
+                if (value != null) {
+                  store.updateApplicantStatus(applicant['id'], value);
+                  Navigator.pop(ctx);
+                }
+              },
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  for (final st in [
+                    'Ditinjau',
+                    'Wawancara',
+                    'Diterima',
+                    'Ditolak',
+                  ])
+                    RadioListTile<String>(title: Text(st), value: st),
+                ],
               ),
+            ),
           ],
         ),
       ),

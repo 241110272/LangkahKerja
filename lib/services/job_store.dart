@@ -352,7 +352,9 @@ class JobStore extends ChangeNotifier {
       );
       employerJobs[sampleJob.id] = sampleJob;
     }
-    for (final ej in employerJobs.values) {
+    // Demo employer listings stay in the employer workspace as examples.
+    // Listings actually posted by the user still bridge into employee search.
+    for (final ej in employerJobs.values.where((job) => !job.demo)) {
       if (!jobs.any((j) => j.id == ej.id)) {
         jobs.insert(0, ej);
       }
