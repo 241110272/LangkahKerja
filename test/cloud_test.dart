@@ -47,6 +47,16 @@ void main() {
       );
       await tester.pumpAndSettle();
       expect(find.text(privateJob.title), findsOneWidget);
+      await tester.scrollUntilVisible(
+        find.byType(TextField),
+        350,
+        scrollable: find.byType(Scrollable).first,
+      );
+      await tester.enterText(
+        find.byType(TextField),
+        'Draf rahasia belum disimpan',
+      );
+      await tester.pumpAndSettle();
       cloud.current = testUser(uidB);
       cloud.notifyListeners();
       await tester.pumpAndSettle();

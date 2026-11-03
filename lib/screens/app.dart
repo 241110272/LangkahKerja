@@ -11,6 +11,8 @@ import 'settings.dart';
 import 'career_guide.dart';
 import 'agenda.dart';
 import 'manual_application.dart';
+import 'insights.dart';
+import 'compare.dart';
 
 class AppShell extends StatefulWidget {
   const AppShell({super.key, required this.store, this.cloud});
@@ -1093,6 +1095,26 @@ class _AppShellState extends State<AppShell> {
               ),
               icon: const Icon(Icons.event_note_outlined, size: 18),
               label: const Text('Agenda'),
+            ),
+            TextButton.icon(
+              onPressed: () => Navigator.push(
+                context,
+                MaterialPageRoute<void>(
+                  builder: (_) => InsightsPage(store: store),
+                ),
+              ),
+              icon: const Icon(Icons.insights_outlined, size: 18),
+              label: const Text('Progres lamaran'),
+            ),
+            TextButton.icon(
+              onPressed: () => Navigator.push(
+                context,
+                MaterialPageRoute<void>(
+                  builder: (_) => ComparePage(store: store),
+                ),
+              ),
+              icon: const Icon(Icons.compare_arrows, size: 18),
+              label: const Text('Bandingkan favorit'),
             ),
           ],
         ),

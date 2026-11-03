@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:url_launcher/url_launcher.dart';
 import '../config.dart';
 import '../main.dart';
 import '../services/cloud.dart';
@@ -9,6 +8,9 @@ import 'agenda.dart';
 import 'career_guide.dart';
 import 'data_privacy.dart';
 import 'privacy.dart';
+import 'help.dart';
+import 'insights.dart';
+import 'compare.dart';
 
 class Preferences extends StatefulWidget {
   const Preferences({super.key, required this.store, this.cloud});
@@ -54,6 +56,18 @@ class _PreferencesState extends State<Preferences> {
         style: TextStyle(fontSize: 12, color: muted),
       ),
       const SizedBox(height: 24),
+      ListTile(
+        leading: const Icon(Icons.insights_outlined),
+        title: const Text('Progres lamaran'),
+        trailing: const Icon(Icons.chevron_right),
+        onTap: () => open(InsightsPage(store: widget.store)),
+      ),
+      ListTile(
+        leading: const Icon(Icons.compare_arrows),
+        title: const Text('Bandingkan favorit'),
+        trailing: const Icon(Icons.chevron_right),
+        onTap: () => open(ComparePage(store: widget.store)),
+      ),
       Card(
         color: lavender.withValues(alpha: .5),
         child: ListTile(
@@ -175,28 +189,8 @@ class _PreferencesState extends State<Preferences> {
           AppConfig.supportEmail,
           style: TextStyle(fontSize: 11),
         ),
-        onTap: () async {
-          final uri = Uri(
-            scheme: 'mailto',
-            path: AppConfig.supportEmail,
-            queryParameters: {'subject': 'Bantuan LangkahKerja'},
-          );
-          try {
-            if (!await launchUrl(uri)) throw StateError('No email app');
-          } catch (_) {
-            if (context.mounted) {
-              showDialog<void>(
-                context: context,
-                builder: (ctx) => const AlertDialog(
-                  title: Text('Hubungi Benelovent'),
-                  content: SelectableText(
-                    'Kirim pertanyaan ke ${AppConfig.supportEmail}. Jangan sertakan password, OTP, atau informasi rekening.',
-                  ),
-                ),
-              );
-            }
-          }
-        },
+        trailing: const Icon(Icons.chevron_right),
+        onTap: () => open(const HelpPage()),
       ),
       ListTile(
         leading: const Icon(Icons.info_outline),
@@ -204,7 +198,7 @@ class _PreferencesState extends State<Preferences> {
         onTap: () => showAboutDialog(
           context: context,
           applicationName: 'LangkahKerja',
-          applicationVersion: '1.1.0',
+          applicationVersion: '1.2.0',
           applicationLegalese: '© 2026 Benelovent · GPL-3.0',
           children: const [
             SizedBox(height: 16),
@@ -216,7 +210,7 @@ class _PreferencesState extends State<Preferences> {
       ),
       const SizedBox(height: 20),
       const Text(
-        'BENELOVENT · LANGKAHKERJA 1.1.0',
+        'BENELOVENT · LANGKAHKERJA 1.2.0',
         textAlign: TextAlign.center,
         style: TextStyle(color: muted, fontSize: 9, letterSpacing: 1.5),
       ),

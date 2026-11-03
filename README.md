@@ -1,6 +1,6 @@
 # LangkahKerja
 
-**Versi kandidat 1.1.0+2** · Flutter · SDG 8 · Pengembang **Benelovent**
+**Versi kandidat 1.2.0+3** · Flutter · SDG 8 · Pengembang **Benelovent**
 
 Repository **benevolent** — Smart Decent Wealth and Work Growth App.
 
@@ -26,6 +26,9 @@ Pada komputer ini, Flutter ada di `C:\Users\sastr\.codex\tools\flutter\bin\flutt
 - Favorit, riwayat pencarian, serta kombinasi pencarian tersimpan.
 - Detail lowongan, sumber, gaji bila tersedia, tautan lamaran asli, berbagi, dan pelaporan masalah.
 - Lamaran manual dari sumber di luar aplikasi; status, catatan pribadi, riwayat perubahan, dan agenda follow-up.
+- Ringkasan progres dengan rentang waktu, distribusi status, agenda aktif, serta aktivitas terbaru; data demo terpisah secara default.
+- Bandingkan 2–3 favorit: lokasi, pola kerja, tipe, gaji dari sumber, dan kata kunci minat yang ditemukan.
+- Pusat bantuan offline yang bisa dicari, kontak dukungan, konfirmasi alamat situs luar, dan perlindungan catatan yang belum disimpan.
 - Pengingat lokal opsional pada Android/iOS. Browser hanya menampilkan agenda.
 - Login/daftar lewat kode email, sesi aman di perangkat mobile, sinkronisasi revisi, pemisahan akun, dan penyelesaian konflik.
 - Ekspor cadangan JSON, pemulihan tervalidasi, ekspor CSV, penghapusan data/cache, dan penghapusan akun.
@@ -38,8 +41,9 @@ Pada komputer ini, Flutter ada di `C:\Users\sastr\.codex\tools\flutter\bin\flutt
 
 - [Setup backend, akun, dan sumber Indonesia](docs/BACKEND_SETUP.md)
 - [Gerbang rilis, signing, dan Play Console](docs/RELEASE.md)
+- [Persiapan App Store dan standar lintas toko](docs/APP_STORE.md)
 - [APK debug dan pengujian Android](docs/ANDROID_TESTING.md)
-- [Bukti dan batas validasi](docs/VALIDATION.md)
+- [Bukti dan batas validasi kandidat 1.2.0](docs/VALIDATION_1.2.md)
 - [Draf materi Play Store](docs/store/LISTING.md)
 - [Kebijakan privasi publik](docs/legal/privacy.html)
 - [Halaman penghapusan akun publik](docs/legal/delete-account.html)

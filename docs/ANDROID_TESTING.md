@@ -20,6 +20,17 @@ Ekspor cadangan sebelum menghapus atau mengganti APK uji, karena data lokal dapa
 
 Catat versi Android, model perangkat, waktu uji, hasil, dan langkah masalah yang ditemukan. Lakukan pemeriksaan berikut pada perangkat nyata:
 
+Untuk kandidat 1.2.0, sertakan skenario berikut:
+
+- Buka Lamaran → Progres lamaran. Periksa semua waktu/7/30 hari dan pastikan demo hanya dihitung setelah saklar diaktifkan.
+- Simpan empat favorit, lalu Bandingkan favorit. Pilih dua, tambah yang ketiga, dan pastikan pilihan keempat dinonaktifkan sampai satu pilihan dibatalkan. Periksa data yang tidak disebutkan sumber.
+- Ubah catatan tanpa menyimpan; tekan tombol kembali dan tombol kembali sistem. Pilih Lanjut menulis, simpan, lalu keluar. Ulangi dengan Abaikan perubahan dan periksa catatan tersimpan sebelumnya.
+- Buka tautan sumber/deskripsi. Pastikan domain dan URL dapat dibaca, Batal tidak membuka browser, dan Lanjut ke situs membuka tujuan yang benar.
+- Aktifkan mode pesawat, cari jawaban pada Pusat bantuan, lalu periksa salin alamat email. Uji juga keadaan tanpa aplikasi email.
+- Atur ukuran font sistem terbesar dan gunakan TalkBack untuk indikator progres, pilihan favorit, dialog, serta tombol bantuan.
+
+Matriks dasar yang tetap diperlukan:
+
 | Alur | Hasil yang diperiksa |
 |---|---|
 | Onboarding → buka ulang | Onboarding selesai tetap tersimpan |

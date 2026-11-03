@@ -19,6 +19,8 @@ Langkah kecil, masa depan besar. LangkahKerja membantu kamu mengatur perjalanan 
 - Catat lowongan yang kamu temukan di luar aplikasi.
 - Kelola status lamaran: ingin dilamar, sudah dilamar, interview, diterima, atau ditolak. Lihat riwayat dan tambahkan catatan pribadi.
 - Atur agenda follow-up dan aktifkan pengingat lokal secara opsional pada perangkatmu.
+- Lihat ringkasan progres lamaran dan bandingkan informasi 2–3 lowongan favorit tanpa skor kelayakan otomatis.
+- Baca bantuan offline dan periksa alamat situs tujuan sebelum melanjutkan ke halaman lamaran.
 - Masuk dengan kode email untuk menyinkronkan data akun antarperangkat. Perubahan lokal tetap bisa dicatat saat offline.
 - Ekspor cadangan JSON atau daftar lamaran CSV; pulihkan cadangan ketika diperlukan.
 - Persiapkan langkah berikutnya melalui checklist dan materi CV, portofolio, interview, serta keamanan lowongan.
