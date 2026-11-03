@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart' show ScrollCacheExtent;
 import '../main.dart';
 import '../models/job.dart';
 import '../services/job_store.dart';
 import '../widgets/brand.dart';
 import '../widgets/career_banner.dart';
 import '../widgets/job_card.dart';
+import '../widgets/role_switcher.dart';
 import '../models/user_data.dart';
 import '../services/cloud.dart';
 import 'settings.dart';
@@ -13,6 +15,8 @@ import 'agenda.dart';
 import 'manual_application.dart';
 import 'insights.dart';
 import 'compare.dart';
+import 'career_journey.dart';
+import 'career_tools.dart';
 
 class AppShell extends StatefulWidget {
   const AppShell({super.key, required this.store, this.cloud});
@@ -22,10 +26,16 @@ class AppShell extends StatefulWidget {
   State<AppShell> createState() => _AppShellState();
 }
 
-class _AppShellState extends State<AppShell> {
+class _AppShellState extends State<AppShell>
+    with SingleTickerProviderStateMixin {
   int tab = 0, category = 0;
+  final scaffoldKey = GlobalKey<ScaffoldState>();
   final search = TextEditingController();
   final applicationSearch = TextEditingController();
+  late final menuAnimation = AnimationController(
+    vsync: this,
+    duration: const Duration(milliseconds: 320),
+  );
   String city = '', jobType = '';
   int days = 0;
   bool remote = false, matching = false, favorites = false, newest = true;
@@ -35,6 +45,7 @@ class _AppShellState extends State<AppShell> {
   void dispose() {
     search.dispose();
     applicationSearch.dispose();
+    menuAnimation.dispose();
     super.dispose();
   }
 
@@ -42,6 +53,15 @@ class _AppShellState extends State<AppShell> {
   Widget build(BuildContext context) => ListenableBuilder(
     listenable: store,
     builder: (context, _) => Scaffold(
+      key: scaffoldKey,
+      onDrawerChanged: (opened) {
+        if (opened) {
+          menuAnimation.forward();
+        } else {
+          menuAnimation.reverse();
+        }
+      },
+      drawer: navigationDrawer(),
       body: SafeArea(
         bottom: false,
         child: Column(
@@ -50,26 +70,23 @@ class _AppShellState extends State<AppShell> {
               padding: const EdgeInsets.fromLTRB(22, 15, 22, 12),
               child: Row(
                 children: [
-                  const Brand(),
-                  const Spacer(),
                   IconButton(
-                    tooltip: 'Profil dan preferensi',
-                    onPressed: () => setState(() => tab = 3),
+                    tooltip: 'Buka menu utama',
+                    onPressed: () => scaffoldKey.currentState?.openDrawer(),
                     style: IconButton.styleFrom(
                       backgroundColor: lavender.withValues(alpha: .8),
                       fixedSize: const Size(40, 40),
                     ),
-                    icon: Text(
-                      store.name.isEmpty
-                          ? 'S'
-                          : store.name.characters.first.toUpperCase(),
-                      style: const TextStyle(
-                        color: plum,
-                        fontSize: 14,
-                        fontWeight: FontWeight.w800,
-                      ),
+                    icon: AnimatedIcon(
+                      icon: AnimatedIcons.menu_close,
+                      progress: menuAnimation,
+                      color: plum,
                     ),
                   ),
+                  const SizedBox(width: 8),
+                  const Brand(),
+                  const Spacer(),
+                  RoleSwitcher(store: store),
                 ],
               ),
             ),
@@ -98,13 +115,228 @@ class _AppShellState extends State<AppShell> {
     ),
   );
 
+  Widget navigationDrawer() {
+    var order = 0;
+    final width = MediaQuery.sizeOf(context).width;
+    return Drawer(
+      width: width < 360 ? width * .9 : 340,
+      backgroundColor: canvas,
+      child: SafeArea(
+        child: Column(
+          children: [
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.fromLTRB(22, 20, 14, 22),
+              decoration: const BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [plum, Color(0xFF493451)],
+                ),
+                borderRadius: BorderRadius.vertical(
+                  bottom: Radius.circular(24),
+                ),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      const Expanded(
+                        child: Text(
+                          'Ruang langkahmu',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 20,
+                            fontWeight: FontWeight.w800,
+                          ),
+                        ),
+                      ),
+                      IconButton(
+                        tooltip: 'Tutup menu',
+                        onPressed: () =>
+                            scaffoldKey.currentState?.closeDrawer(),
+                        icon: const Icon(Icons.close, color: Colors.white),
+                      ),
+                    ],
+                  ),
+                  Text(
+                    store.name.isEmpty
+                        ? 'Peluang dan bekal untuk langkah berikutnya.'
+                        : 'Hai, ${store.name} · siap melangkah?',
+                    style: const TextStyle(
+                      color: Colors.white70,
+                      fontSize: 11,
+                      height: 1.5,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Expanded(
+              child: ListView(
+                scrollCacheExtent: const ScrollCacheExtent.pixels(800),
+                padding: const EdgeInsets.fromLTRB(14, 18, 14, 64),
+                children: [
+                  _drawerHeading('PERAN & MODE'),
+                  _drawerEntry(
+                    order: order++,
+                    icon: Icons.business_center_rounded,
+                    title: 'Post Kerja (Employer)',
+                    subtitle: 'Beralih ke mode pasang lowongan',
+                    onTap: () => store.setActiveRole('employer'),
+                  ),
+                  _drawerEntry(
+                    order: order++,
+                    icon: Icons.swap_horiz_rounded,
+                    title: 'Menu Pilih Peran',
+                    subtitle: 'Kembali ke pilihan Employee / Employer',
+                    onTap: () => store.setActiveRole(null),
+                  ),
+                  const SizedBox(height: 12),
+                  _drawerHeading('JELAJAHI'),
+                  _drawerEntry(
+                    order: order++,
+                    icon: Icons.work_outline_rounded,
+                    title: 'Peluang',
+                    subtitle: 'Temukan lowongan yang sesuai',
+                    onTap: () => setState(() => tab = 1),
+                  ),
+                  _drawerEntry(
+                    order: order++,
+                    icon: Icons.person_outline_rounded,
+                    title: 'Profil & preferensi',
+                    subtitle: 'Akun, minat, dan privasi',
+                    onTap: () => setState(() => tab = 3),
+                  ),
+                  const SizedBox(height: 12),
+                  _drawerHeading('SIAPKAN BERKAS'),
+                  _drawerEntry(
+                    order: order++,
+                    icon: Icons.description_outlined,
+                    title: 'Buat CV',
+                    subtitle: 'Rangkai pengalaman dan keterampilan',
+                    onTap: () => _pushTool(ResumeBuilderPage(store: store)),
+                  ),
+                  _drawerEntry(
+                    order: order++,
+                    icon: Icons.mail_outline_rounded,
+                    title: 'Surat lamaran kerja',
+                    subtitle: 'Susun draf sesuai posisi tujuan',
+                    onTap: () =>
+                        _pushTool(CoverLetterBuilderPage(store: store)),
+                  ),
+                  _drawerEntry(
+                    order: order++,
+                    icon: Icons.portrait_outlined,
+                    title: 'Pasfoto 3×4',
+                    subtitle: 'Pratinjau crop dari foto pilihanmu',
+                    onTap: () => _pushTool(const Photo3x4Page()),
+                  ),
+                  const SizedBox(height: 12),
+                  _drawerHeading('DOKUMEN OPSIONAL'),
+                  _drawerEntry(
+                    order: order++,
+                    icon: Icons.shield_outlined,
+                    title: 'Upload identitas',
+                    subtitle: 'Hanya saat diminta kanal resmi',
+                    onTap: () => _pushTool(const IdentityUploadPage()),
+                  ),
+                  const SizedBox(height: 12),
+                  _drawerHeading('RUANG PRIBADI'),
+                  _drawerEntry(
+                    order: order++,
+                    icon: Icons.route_outlined,
+                    title: 'Perjalanan karier',
+                    subtitle: 'Agenda, progres, dan jejak lamaran',
+                    onTap: () => _pushTool(CareerJourney(store: store)),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _drawerHeading(String label) => Padding(
+    padding: const EdgeInsets.fromLTRB(12, 0, 12, 6),
+    child: Text(
+      label,
+      style: const TextStyle(
+        color: muted,
+        fontSize: 9,
+        fontWeight: FontWeight.w800,
+        letterSpacing: 1.3,
+      ),
+    ),
+  );
+
+  Widget _drawerEntry({
+    required int order,
+    required IconData icon,
+    required String title,
+    required String subtitle,
+    required VoidCallback onTap,
+  }) => AnimatedBuilder(
+    animation: menuAnimation,
+    builder: (context, child) {
+      final begin = (order * .07).clamp(0.0, .55).toDouble();
+      final progress = Interval(
+        begin,
+        1,
+        curve: Curves.easeOutCubic,
+      ).transform(menuAnimation.value);
+      return Opacity(
+        opacity: progress,
+        child: Transform.translate(
+          offset: Offset(16 * (1 - progress), 0),
+          child: child,
+        ),
+      );
+    },
+    child: Padding(
+      padding: const EdgeInsets.only(bottom: 3),
+      child: ListTile(
+        dense: true,
+        visualDensity: const VisualDensity(vertical: -1),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        leading: Container(
+          width: 40,
+          height: 40,
+          decoration: BoxDecoration(
+            color: lavender.withValues(alpha: .75),
+            borderRadius: BorderRadius.circular(13),
+          ),
+          child: Icon(icon, color: plum, size: 21),
+        ),
+        title: Text(
+          title,
+          style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w800),
+        ),
+        subtitle: Text(
+          subtitle,
+          style: const TextStyle(fontSize: 9, color: muted),
+        ),
+        trailing: const Icon(Icons.chevron_right, size: 18, color: muted),
+        onTap: () {
+          scaffoldKey.currentState?.closeDrawer();
+          onTap();
+        },
+      ),
+    ),
+  );
+
+  void _pushTool(Widget page) =>
+      Navigator.push(context, MaterialPageRoute<void>(builder: (_) => page));
+
   Widget bottomBar() {
-    const labels = ['Beranda', 'Eksplorasi', 'Lamaran', 'Profil'];
+    const labels = ['Beranda', 'Eksplorasi', 'Lamaran'];
     const icons = [
       Icons.home_outlined,
       Icons.search_rounded,
       Icons.assignment_outlined,
-      Icons.person_outline_rounded,
     ];
     return Container(
       decoration: BoxDecoration(
@@ -125,7 +357,7 @@ class _AppShellState extends State<AppShell> {
           padding: const EdgeInsets.fromLTRB(8, 7, 8, 8),
           child: Row(
             children: List.generate(
-              4,
+              labels.length,
               (i) => Expanded(
                 child: Semantics(
                   selected: tab == i,
@@ -195,10 +427,6 @@ class _AppShellState extends State<AppShell> {
       key: const PageStorageKey('home'),
       padding: const EdgeInsets.fromLTRB(22, 0, 22, 22),
       children: [
-        Text(
-          'Halo, ${store.name.isEmpty ? 'Sahabat' : store.name} 👋',
-          style: const TextStyle(fontSize: 13, color: ink),
-        ),
         const SizedBox(height: 5),
         headline('Kariermu,\nlangkahmu.'),
         const SizedBox(height: 15),
@@ -318,12 +546,6 @@ class _AppShellState extends State<AppShell> {
               ),
             ),
           ),
-        ),
-        const SizedBox(height: 24),
-        const Text(
-          'Mendukung SDG 8 · Pekerjaan layak & pertumbuhan ekonomi',
-          textAlign: TextAlign.center,
-          style: TextStyle(color: muted, fontSize: 9),
         ),
       ],
     ),

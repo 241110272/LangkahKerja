@@ -15,7 +15,25 @@ void main() {
       ..addFont(rootBundle.load('assets/fonts/Manrope.ttf'));
     await font.load();
   });
-  testWidgets('onboarding menjelaskan privasi dan menyimpan penyelesaian', (
+  testWidgets(
+    'menu pilih peran menggantikan onboarding dan memilih cari kerja',
+    (tester) async {
+      SharedPreferences.setMockInitialValues({});
+      final prefs = await SharedPreferences.getInstance();
+      final store = JobStore(prefs);
+      await tester.pumpWidget(LangkahKerjaApp(store: store));
+      await tester.pumpAndSettle();
+      expect(find.text('Cari Kerja (Employee)'), findsWidgets);
+      await tester.tap(find.text('Cari Kerja (Employee)'));
+      await tester.pumpAndSettle();
+      expect(store.onboardingComplete, isTrue);
+      expect(store.activeRole, 'employee');
+      expect((JobStore(prefs)..restore()).onboardingComplete, isTrue);
+      expect(find.text('Eksplorasi'), findsOneWidget);
+      expect(tester.takeException(), isNull);
+    },
+  );
+  testWidgets('menu pilih peran dapat memilih post kerja employer', (
     tester,
   ) async {
     SharedPreferences.setMockInitialValues({});
@@ -23,14 +41,26 @@ void main() {
     final store = JobStore(prefs);
     await tester.pumpWidget(LangkahKerjaApp(store: store));
     await tester.pumpAndSettle();
-    await tester.tap(find.text('Lewati'));
-    await tester.pumpAndSettle();
-    expect(find.text('Mulai melangkah'), findsOneWidget);
-    await tester.tap(find.text('Mulai melangkah'));
+    expect(find.text('Post Kerja (Employer)'), findsWidgets);
+    await tester.tap(find.text('Post Kerja (Employer)'));
     await tester.pumpAndSettle();
     expect(store.onboardingComplete, isTrue);
-    expect((JobStore(prefs)..restore()).onboardingComplete, isTrue);
-    expect(find.text('Eksplorasi'), findsOneWidget);
+    expect(store.activeRole, 'employer');
+    expect(find.text('Lowongan'), findsWidgets);
+    expect(tester.takeException(), isNull);
+  });
+  testWidgets('tombol baca kebijakan privasi membuka halaman kebijakan', (
+    tester,
+  ) async {
+    SharedPreferences.setMockInitialValues({});
+    final prefs = await SharedPreferences.getInstance();
+    final store = JobStore(prefs);
+    await tester.pumpWidget(LangkahKerjaApp(store: store));
+    await tester.pumpAndSettle();
+    expect(find.text('Baca kebijakan privasi'), findsOneWidget);
+    await tester.tap(find.text('Baca kebijakan privasi'));
+    await tester.pumpAndSettle();
+    expect(find.text('Kebijakan privasi'), findsWidgets);
     expect(tester.takeException(), isNull);
   });
   testWidgets('lamaran manual tersimpan tanpa membutuhkan akun atau feed', (
@@ -64,6 +94,117 @@ void main() {
     expect(store.applications.length, 1);
     expect(store.applicationJobs.values.single.title, 'Flutter Engineer');
     expect(store.applicationJobs.values.single.demo, isFalse);
+    expect(tester.takeException(), isNull);
+  });
+  testWidgets('menu hamburger membuka perjalanan tanpa tab profil ganda', (
+    tester,
+  ) async {
+    SharedPreferences.setMockInitialValues({});
+    final store = JobStore(await SharedPreferences.getInstance())
+      ..onboardingComplete = true
+      ..useDemo();
+    await store.track(demoJobs.first, ApplicationStatus.interview);
+    await tester.pumpWidget(LangkahKerjaApp(store: store));
+    await tester.pumpAndSettle();
+
+    // Profile and tools live in the drawer; primary tabs remain unchanged.
+    expect(find.text('Beranda'), findsOneWidget);
+    expect(find.text('Eksplorasi'), findsOneWidget);
+    expect(find.text('Lamaran'), findsOneWidget);
+    expect(find.text('Profil & preferensi'), findsNothing);
+    await tester.tap(find.byTooltip('Buka menu utama'));
+    await tester.pumpAndSettle();
+    expect(find.text('Peluang'), findsOneWidget);
+    expect(find.text('Buat CV'), findsOneWidget);
+    expect(find.text('Surat lamaran kerja'), findsOneWidget);
+    await tester.tap(find.text('Peluang'));
+    await tester.pumpAndSettle();
+    expect(find.text('Temukan\npeluangmu.'), findsOneWidget);
+
+    await tester.tap(find.byTooltip('Buka menu utama'));
+    await tester.pumpAndSettle();
+    final drawerScroll = find.descendant(
+      of: find.byType(Drawer),
+      matching: find.byType(Scrollable),
+    );
+    await tester.scrollUntilVisible(
+      find.text('Upload identitas'),
+      100,
+      scrollable: drawerScroll,
+    );
+    expect(find.text('Pasfoto 3×4'), findsOneWidget);
+    expect(find.text('Upload identitas'), findsOneWidget);
+    await tester.scrollUntilVisible(
+      find.text('Profil & preferensi'),
+      100,
+      scrollable: drawerScroll,
+    );
+    expect(find.text('Profil & preferensi'), findsOneWidget);
+    await tester.scrollUntilVisible(
+      find.text('Perjalanan karier'),
+      100,
+      scrollable: drawerScroll,
+    );
+    await tester.tap(find.text('Perjalanan karier'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Perjalanan karier'), findsOneWidget);
+    expect(find.text('PETA PERJALANANMU'), findsOneWidget);
+    expect(find.text('Interview'), findsOneWidget);
+    expect(tester.takeException(), isNull);
+  });
+  testWidgets('draf surat mengambil posisi dari peluang yang sudah dimuat', (
+    tester,
+  ) async {
+    SharedPreferences.setMockInitialValues({});
+    final store = JobStore(await SharedPreferences.getInstance())
+      ..onboardingComplete = true
+      ..useDemo();
+    await tester.pumpWidget(LangkahKerjaApp(store: store));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byTooltip('Buka menu utama'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Surat lamaran kerja'));
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.byType(DropdownButton<String>));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Junior UI/UX Designer · Studio Tumbuh'));
+    await tester.pumpAndSettle();
+    expect(
+      tester.widget<TextField>(find.byType(TextField).first).controller!.text,
+      'Junior UI/UX Designer',
+    );
+    expect(
+      tester.widget<TextField>(find.byType(TextField).at(1)).controller!.text,
+      'Studio Tumbuh',
+    );
+
+    await tester.scrollUntilVisible(
+      find.text('Susun draf surat'),
+      150,
+      scrollable: find
+          .descendant(
+            of: find.byType(Scaffold).last,
+            matching: find.byType(Scrollable),
+          )
+          .first,
+    );
+    await tester.ensureVisible(find.text('Susun draf surat'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Susun draf surat'));
+    await tester.pumpAndSettle();
+    await tester.scrollUntilVisible(
+      find.text('DRAF UNTUK DITINJAU'),
+      150,
+      scrollable: find
+          .descendant(
+            of: find.byType(Scaffold).last,
+            matching: find.byType(Scrollable),
+          )
+          .first,
+    );
+    expect(find.text('DRAF UNTUK DITINJAU'), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
   testWidgets('ketukan pengingat membuka lamaran dan menolak agenda lama', (
@@ -139,7 +280,18 @@ void main() {
       scrollable: find.byType(Scrollable).first,
     );
     expect(find.text('Belum ada yang cocok'), findsOneWidget);
-    await tester.tap(find.text('Profil'));
+    await tester.tap(find.byTooltip('Buka menu utama'));
+    await tester.pumpAndSettle();
+    final drawerScroll = find.descendant(
+      of: find.byType(Drawer),
+      matching: find.byType(Scrollable),
+    );
+    await tester.scrollUntilVisible(
+      find.text('Profil & preferensi'),
+      100,
+      scrollable: drawerScroll,
+    );
+    await tester.tap(find.text('Profil & preferensi'));
     await tester.pumpAndSettle();
     expect(find.text('Nama panggilan'), findsOneWidget);
     await tester.tap(find.text('Lamaran'));
@@ -171,11 +323,26 @@ void main() {
     await tester.tap(find.text('Mulai melangkah'));
     await tester.pumpAndSettle();
     expect(tester.takeException(), isNull);
-    for (final label in ['Eksplorasi', 'Lamaran', 'Profil']) {
+    for (final label in ['Eksplorasi', 'Lamaran']) {
       await tester.tap(find.text(label));
       await tester.pumpAndSettle();
       expect(tester.takeException(), isNull, reason: label);
     }
+    await tester.tap(find.byTooltip('Buka menu utama'));
+    await tester.pumpAndSettle();
+    await tester.scrollUntilVisible(
+      find.text('Profil & preferensi'),
+      100,
+      scrollable: find.descendant(
+        of: find.byType(Drawer),
+        matching: find.byType(Scrollable),
+      ),
+    );
+    await tester.ensureVisible(find.text('Profil & preferensi'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Profil & preferensi'));
+    await tester.pumpAndSettle();
+    expect(tester.takeException(), isNull);
   });
   testWidgets(
     'alur demo: buka lowongan, simpan favorit, lalu catat interview',

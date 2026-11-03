@@ -2,22 +2,19 @@
 
 **Versi kandidat 1.2.0+3** · Flutter · SDG 8 · Pengembang **Benelovent**
 
-Repository **benevolent** — Smart Decent Wealth and Work Growth App.
 
-Aplikasi untuk mencari lowongan Indonesia dan mengelola perjalanan melamar. UI mengikuti referensi plum–lavender, dengan font dan banner foto yang dibundel lokal.
+LangkahKerja membantu pencari kerja di Indonesia menemukan peluang dan mengelola proses melamar. Antarmuka memakai tema plum–lavender, font Manrope, dan aset lokal.
 
 ## Jalankan
 
-Direkomendasikan Flutter **3.47.7** (versi yang dipakai menguji proyek ini). Android membutuhkan JDK 21 dan Android SDK platform 36.
+Gunakan Flutter **3.47.7**. Untuk menjalankan di Android, siapkan JDK 21 dan Android SDK platform 36.
 
 ```powershell
 flutter pub get
 flutter run -d chrome
-# Dengan backend yang sudah disiapkan:
+# Opsional: konfigurasi Supabase sesuai docs/BACKEND_SETUP.md, lalu:
 flutter run --dart-define-from-file=config/env.json
 ```
-
-Pada komputer ini, Flutter ada di `C:\Users\sastr\.codex\tools\flutter\bin\flutter.bat`. Gunakan path tersebut jika Flutter belum masuk PATH.
 
 ## Fitur
 
@@ -35,7 +32,13 @@ Pada komputer ini, Flutter ada di `C:\Users\sastr\.codex\tools\flutter\bin\flutt
 - Checklist persiapan serta materi CV, portofolio, interview, dan keamanan lowongan.
 - Ikon aplikasi, konfigurasi signing rilis, CI, skema SQL/RLS, Edge Functions, halaman privasi/penghapusan publik, dan draf listing Play Store.
 
-**Status integrasi:** sesuai permintaan pemilik, Supabase hanya disiapkan sebagai kode dan panduan; belum diterapkan ke proyek mana pun. Feed Indonesia memerlukan data kurasi berizin atau API provider yang sudah disetujui. Tanpa konfigurasi, fitur lokal dan mode demo tetap bisa dicoba; login/feed tidak menampilkan sukses palsu.
+
+- Mode Hiree, Hirer, dan Admin dari kontribusi tim; moderasi admin masih memakai data dummy.
+- Alat CV, surat lamaran, pasfoto, identitas opsional, dan Perjalanan karier tetap tersedia di hamburger.
+
+## Status backend dan data
+
+Supabase client, migrasi, dan panduannya tersedia, tetapi belum dikonfigurasi atau diterapkan ke proyek. Tanpa konfigurasi, gunakan data demo yang sudah diberi label; data tersebut bukan lowongan aktif. Feed produksi memerlukan sumber lowongan berizin. Draf CV/surat hanya sementara, foto diproses di perangkat, dan berkas identitas tidak disimpan atau diunggah aplikasi.
 
 ## Dokumen penting
 
@@ -49,7 +52,7 @@ Pada komputer ini, Flutter ada di `C:\Users\sastr\.codex\tools\flutter\bin\flutt
 - [Halaman penghapusan akun publik](docs/legal/delete-account.html)
 - [Aset foto/font dan prompt](assets/README.md)
 
-Lowongan demo selalu berlabel dan bukan lowongan aktif. Lamaran dilakukan pada situs sumber; status diperbarui oleh pengguna sendiri. Tidak ada pengiriman CV otomatis atau klaim lowongan telah diverifikasi secara independen.
+Lamaran dilakukan di situs sumber dan statusnya diperbarui oleh pengguna. LangkahKerja tidak mengirim CV otomatis atau menjamin verifikasi independen atas setiap lowongan.
 
 ## Pengujian
 
@@ -76,7 +79,7 @@ Ini memeriksa pembatasan feed publik, isolasi data per akun, revisi konflik, kuo
 3. Buka detail, simpan favorit, pilih status, tulis catatan lalu **Simpan catatan**.
 4. Tambahkan agenda. Pada Android/iOS, aktifkan notifikasi jika diinginkan.
 5. Di Lamaran, pilih **Catat lowongan sendiri** untuk peluang dari luar aplikasi.
-6. Buka Profil → Bekal karier, Data & privasi, atau Akun & sinkronisasi.
+6. Buka hamburger untuk Peluang, alat berkas karier, Perjalanan karier, atau Profil & preferensi.
 7. Ekspor cadangan, muat ulang aplikasi, dan periksa pemulihan data.
 
 ## Struktur
@@ -84,7 +87,7 @@ Ini memeriksa pembatasan feed publik, isolasi data per akun, revisi konflik, kuo
 ```text
 lib/models/       Model lowongan, status, riwayat, pencarian tersimpan
 lib/services/     SQLite/prefs, API, cloud sync, ekspor, notifikasi
-lib/screens/      Beranda, eksplorasi, detail, akun, agenda, privasi, materi
+lib/screens/      Beranda, peluang, lamaran, alat karier, akun, privasi
 lib/widgets/      Komponen tema bersama
 supabase/         Migrasi RLS dan Edge Functions (belum dideploy)
 docs/             Panduan rilis, backend, legal, dan listing
@@ -92,4 +95,4 @@ scripts/          Validasi rilis, ikon, legal, dan tes SQL
 test/             Pengujian logika, keamanan, cloud mock, dan alur UI
 ```
 
-Lisensi proyek mengikuti [GPL-3.0](LICENSE). Lisensi font Manrope ada di `assets/fonts/OFL-Manrope.txt`.
+Lisensi aplikasi: [GPL-3.0](LICENSE). Lisensi Manrope: `assets/fonts/OFL-Manrope.txt`.

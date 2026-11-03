@@ -4,9 +4,9 @@ import '../main.dart';
 
 const privacySections = <String, String>{
   'Pengelola dan kontak':
-      'LangkahKerja dikelola oleh Benelovent. Hubungi sastraxez@gmail.com untuk dukungan, pertanyaan privasi, atau permintaan penghapusan akun. Diperbarui 17 Oktober 2026.',
+      'LangkahKerja dikelola oleh Benelovent. Hubungi sastraxez@gmail.com untuk dukungan, pertanyaan privasi, atau permintaan penghapusan akun. Diperbarui 31 Oktober 2026.',
   'Data di perangkat':
-      'Nama panggilan, minat, lokasi yang diketik, favorit, catatan, riwayat status, agenda, dan checklist disimpan di perangkat. Aplikasi tidak meminta GPS, kontak, kamera, atau berkas CV. Hapus data melalui Profil → Data & privasi.',
+      'Nama panggilan, minat, lokasi yang diketik, favorit, catatan, riwayat status, agenda, dan checklist disimpan di perangkat. Aplikasi tidak meminta GPS, kontak, atau kamera. Isi CV dan surat lamaran hanya berada di memori selama halaman terbuka; jika kamu memilih Salin, teks masuk ke clipboard perangkat. Foto pasfoto diproses sementara di perangkat dan hasilnya hanya dibagikan jika kamu memilihnya. Pada alur identitas, aplikasi hanya menampilkan nama berkas; isi file tidak dibaca, disalin, disimpan, atau diunggah. Hapus data melalui hamburger → Profil & preferensi → Data & privasi.',
   'Akun dan sinkronisasi':
       'Masuk menggunakan kode verifikasi yang dikirim ke email melalui Supabase. Jika menghubungkan data ke akun, data pribadi tersebut dikirim melalui HTTPS dan disimpan di backend Supabase. Data akun dibatasi melalui kontrol akses per pengguna. Aplikasi tidak menyimpan password emailmu.',
   'Layanan lowongan dan tautan':
@@ -16,7 +16,7 @@ const privacySections = <String, String>{
   'Cadangan dan berbagi':
       'Ekspor JSON dan CSV dapat memuat catatan pribadi. Kamu memilih lokasi atau aplikasi tujuan berbagi. Lindungi berkas ekspor karena tidak dienkripsi oleh LangkahKerja. Mengimpor cadangan mengganti data lokal setelah konfirmasi. Cadangan buatan pengguna tidak ikut terhapus saat akun dihapus.',
   'Retensi dan penghapusan':
-      'Data akun disimpan sampai kamu menghapusnya. Hapus akun dari Profil → Akun & sinkronisasi → Hapus akun setelah masuk ulang dengan kode email baru. Data akun aktif dan laporan yang terkait dihapus di server; salinan cadangan infrastruktur mengikuti masa retensi penyedia. Data lokal di perangkat lain mungkin masih tersimpan sampai perangkat tersebut tersambung dan keluar/dihapus datanya. Kamu juga dapat meminta penghapusan melalui sastraxez@gmail.com atau halaman penghapusan publik yang dicantumkan pada Play Store.',
+      'Data akun disimpan sampai kamu menghapusnya. Hapus akun dari hamburger → Profil & preferensi → Akun & sinkronisasi → Hapus akun setelah masuk ulang dengan kode email baru. Data akun aktif dan laporan yang terkait dihapus di server; salinan cadangan infrastruktur mengikuti masa retensi penyedia. Data lokal di perangkat lain mungkin masih tersimpan sampai perangkat tersebut tersambung dan keluar/dihapus datanya. Kamu juga dapat meminta penghapusan melalui sastraxez@gmail.com atau halaman penghapusan publik yang dicantumkan pada Play Store.',
   'Pilihan pengguna':
       'Tanpa masuk, fitur penyimpanan lokal tetap dapat dipakai. Tidak ada iklan, pembayaran, analitik pemasaran, atau penjualan data pada versi ini. Aplikasi ditujukan untuk pencari kerja dewasa dan bukan layanan perekrutan perusahaan. Ketentuan penggunaan data dapat diperbarui bersamaan dengan fitur; perubahan akan disertai pembaruan kebijakan ini.',
 };
