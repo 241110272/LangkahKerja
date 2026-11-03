@@ -14,34 +14,40 @@ class CareerBanner extends StatelessWidget {
       onTap: onTap,
       child: ClipRRect(
         borderRadius: BorderRadius.circular(compact ? 19 : 24),
-        child: SizedBox(
-          height:
-              (compact
-                  ? (MediaQuery.sizeOf(context).width < 360 ? 160 : 140)
-                  : (MediaQuery.sizeOf(context).width < 360 ? 260 : 246)) *
-              MediaQuery.textScalerOf(context).scale(1).clamp(1.0, 2.0),
+        child: ConstrainedBox(
+          constraints: BoxConstraints(
+            minHeight:
+                (compact
+                    ? (MediaQuery.sizeOf(context).width < 360 ? 160 : 140)
+                    : (MediaQuery.sizeOf(context).width < 360 ? 260 : 246)) *
+                MediaQuery.textScalerOf(context).scale(1).clamp(1.0, 2.0),
+          ),
           child: Stack(
-            fit: StackFit.expand,
+            alignment: Alignment.bottomLeft,
             children: [
-              Image.asset(
-                'assets/images/career-coworking.png',
-                fit: BoxFit.cover,
-                alignment: compact
-                    ? const Alignment(.2, -.2)
-                    : const Alignment(.55, 0),
-                excludeFromSemantics: true,
+              Positioned.fill(
+                child: Image.asset(
+                  'assets/images/career-coworking.png',
+                  fit: BoxFit.cover,
+                  alignment: compact
+                      ? const Alignment(.2, -.2)
+                      : const Alignment(.55, 0),
+                  excludeFromSemantics: true,
+                ),
               ),
-              DecoratedBox(
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.centerLeft,
-                    end: Alignment.centerRight,
-                    colors: [
-                      plum.withValues(alpha: .82),
-                      plum.withValues(alpha: .34),
-                      plum.withValues(alpha: .02),
-                    ],
-                    stops: const [0, .55, 1],
+              Positioned.fill(
+                child: DecoratedBox(
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.centerLeft,
+                      end: Alignment.centerRight,
+                      colors: [
+                        plum.withValues(alpha: .82),
+                        plum.withValues(alpha: .34),
+                        plum.withValues(alpha: .02),
+                      ],
+                      stops: const [0, .55, 1],
+                    ),
                   ),
                 ),
               ),
@@ -50,6 +56,7 @@ class CareerBanner extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.end,
+                  mainAxisSize: MainAxisSize.min,
                   children: [
                     Text(
                       compact
@@ -74,6 +81,20 @@ class CareerBanner extends StatelessWidget {
                         fontSize: compact ? 11 : 13,
                       ),
                     ),
+                    if (compact) ...[
+                      const SizedBox(height: 10),
+                      const Align(
+                        alignment: Alignment.centerRight,
+                        child: Text(
+                          'REMOTE',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.w800,
+                            fontSize: 10,
+                          ),
+                        ),
+                      ),
+                    ],
                     if (!compact) ...[
                       const SizedBox(height: 15),
                       ClipRRect(
@@ -120,29 +141,6 @@ class CareerBanner extends StatelessWidget {
                   ],
                 ),
               ),
-              if (compact)
-                Positioned(
-                  right: 14,
-                  bottom: 14,
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 13,
-                      vertical: 6,
-                    ),
-                    decoration: BoxDecoration(
-                      color: lavender,
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    child: const Text(
-                      'REMOTE',
-                      style: TextStyle(
-                        color: ink,
-                        fontSize: 9,
-                        fontWeight: FontWeight.w800,
-                      ),
-                    ),
-                  ),
-                ),
             ],
           ),
         ),

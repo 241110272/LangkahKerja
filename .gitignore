@@ -61,3 +61,6 @@ config/env.json
 node_modules/
 supabase/.temp/
 supabase/.branches/
+
+# Generated coursework deliverables (local handoff)
+/outputs/

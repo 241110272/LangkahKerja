@@ -1,6 +1,6 @@
 # LangkahKerja
 
-**Versi kandidat 1.2.0+3** · Flutter · SDG 8 · Pengembang **Benelovent**
+**Versi kandidat 1.3.0+4** · Flutter · SDG 8 · Pengembang **Benelovent**
 
 
 LangkahKerja membantu pencari kerja di Indonesia menemukan peluang dan mengelola proses melamar. Antarmuka memakai tema plum–lavender, font Manrope, dan aset lokal.
@@ -46,7 +46,9 @@ Supabase client, migrasi, dan panduannya tersedia, tetapi belum dikonfigurasi at
 - [Gerbang rilis, signing, dan Play Console](docs/RELEASE.md)
 - [Persiapan App Store dan standar lintas toko](docs/APP_STORE.md)
 - [APK debug dan pengujian Android](docs/ANDROID_TESTING.md)
-- [Bukti dan batas validasi kandidat 1.2.0](docs/VALIDATION_1.2.md)
+- [Validasi integrasi dan responsivitas](docs/handoff/VALIDASI.md)
+- [Bagian laporan Sastrawan](docs/handoff/LAPORAN_SASTRAWAN.md)
+- [Naskah dan pembagian rekaman](docs/handoff/NASKAH_REKAMAN.md)
 - [Draf materi Play Store](docs/store/LISTING.md)
 - [Kebijakan privasi publik](docs/legal/privacy.html)
 - [Halaman penghapusan akun publik](docs/legal/delete-account.html)

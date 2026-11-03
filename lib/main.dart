@@ -5,6 +5,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'config.dart';
+import 'widgets/adaptive_viewport.dart';
 import 'screens/app.dart';
 import 'screens/onboarding.dart';
 import 'screens/employer.dart';
@@ -106,47 +107,12 @@ class LangkahKerjaApp extends StatelessWidget {
     ),
     builder: (context, child) => AppScope(
       cloud: cloud,
-      child: LayoutBuilder(
-        builder: (context, constraints) {
-          if (constraints.maxWidth < 600) return child!;
-          final height = constraints.maxHeight - 32;
-          return DecoratedBox(
-            decoration: const BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: [
-                  Color(0xFFF1ECF9),
-                  Color(0xFFE2D7F1),
-                  Color(0xFFF4EFF8),
-                ],
-              ),
-            ),
-            child: Center(
-              child: Container(
-                width: 430,
-                height: height,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(28),
-                  boxShadow: [
-                    BoxShadow(
-                      color: plum.withValues(alpha: .12),
-                      blurRadius: 45,
-                      offset: const Offset(0, 12),
-                    ),
-                  ],
-                ),
-                clipBehavior: Clip.antiAlias,
-                child: MediaQuery(
-                  data: MediaQuery.of(
-                    context,
-                  ).copyWith(size: Size(430, height)),
-                  child: child!,
-                ),
-              ),
-            ),
-          );
-        },
+      child: ListenableBuilder(
+        listenable: store,
+        builder: (context, _) => AdaptiveViewport(
+          expanded: store.onboardingComplete && store.activeRole == 'employee',
+          child: child!,
+        ),
       ),
     ),
     home: AppRoot(store: store, cloud: cloud),

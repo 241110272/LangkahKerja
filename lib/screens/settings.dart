@@ -198,7 +198,7 @@ class _PreferencesState extends State<Preferences> {
         onTap: () => showAboutDialog(
           context: context,
           applicationName: 'LangkahKerja',
-          applicationVersion: '1.2.0',
+          applicationVersion: '1.3.0',
           applicationLegalese: '© 2026 Benelovent · GPL-3.0',
           children: const [
             SizedBox(height: 16),
@@ -210,7 +210,7 @@ class _PreferencesState extends State<Preferences> {
       ),
       const SizedBox(height: 20),
       const Text(
-        'BENELOVENT · LANGKAHKERJA 1.2.0',
+        'BENELOVENT · LANGKAHKERJA 1.3.0',
         textAlign: TextAlign.center,
         style: TextStyle(color: muted, fontSize: 9, letterSpacing: 1.5),
       ),

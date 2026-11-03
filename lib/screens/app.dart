@@ -4,8 +4,8 @@ import '../main.dart';
 import '../models/job.dart';
 import '../services/job_store.dart';
 import '../widgets/brand.dart';
+import '../widgets/responsive_jobs.dart';
 import '../widgets/career_banner.dart';
-import '../widgets/job_card.dart';
 import '../widgets/role_switcher.dart';
 import '../models/user_data.dart';
 import '../services/cloud.dart';
@@ -52,66 +52,118 @@ class _AppShellState extends State<AppShell>
   @override
   Widget build(BuildContext context) => ListenableBuilder(
     listenable: store,
-    builder: (context, _) => Scaffold(
-      key: scaffoldKey,
-      onDrawerChanged: (opened) {
-        if (opened) {
-          menuAnimation.forward();
-        } else {
-          menuAnimation.reverse();
-        }
+    builder: (context, _) => LayoutBuilder(
+      builder: (context, constraints) {
+        final rail =
+            constraints.maxWidth >= 760 && constraints.maxHeight >= 520;
+        return Scaffold(
+          key: scaffoldKey,
+          onDrawerChanged: (opened) {
+            if (opened) {
+              menuAnimation.forward();
+            } else {
+              menuAnimation.reverse();
+            }
+          },
+          drawer: navigationDrawer(),
+          body: SafeArea(
+            bottom: false,
+            child: Column(
+              children: [
+                Padding(
+                  padding: EdgeInsets.fromLTRB(
+                    constraints.maxWidth < 360 ? 12 : 22,
+                    15,
+                    constraints.maxWidth < 360 ? 12 : 22,
+                    12,
+                  ),
+                  child: Row(
+                    children: [
+                      IconButton(
+                        tooltip: 'Buka menu utama',
+                        onPressed: () => scaffoldKey.currentState?.openDrawer(),
+                        style: IconButton.styleFrom(
+                          backgroundColor: lavender.withValues(alpha: .8),
+                          fixedSize: const Size(40, 40),
+                        ),
+                        icon: AnimatedIcon(
+                          icon: AnimatedIcons.menu_close,
+                          progress: menuAnimation,
+                          color: plum,
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      const Expanded(
+                        child: Align(
+                          alignment: Alignment.centerLeft,
+                          child: FittedBox(
+                            fit: BoxFit.scaleDown,
+                            child: Brand(),
+                          ),
+                        ),
+                      ),
+                      RoleSwitcher(store: store),
+                    ],
+                  ),
+                ),
+                if (store.storageError != null)
+                  MaterialBanner(
+                    content: Text(store.storageError!),
+                    actions: [
+                      TextButton(
+                        onPressed: store.persist,
+                        child: const Text('Coba simpan'),
+                      ),
+                    ],
+                  ),
+                Expanded(
+                  child: Row(
+                    children: [
+                      if (rail)
+                        NavigationRail(
+                          key: const ValueKey('employee-rail'),
+                          selectedIndex: tab < 3 ? tab : null,
+                          onDestinationSelected: (value) =>
+                              setState(() => tab = value),
+                          labelType: NavigationRailLabelType.all,
+                          minWidth:
+                              MediaQuery.textScalerOf(context).scale(1) > 1.4
+                              ? 160
+                              : 104,
+                          backgroundColor: canvas,
+                          destinations: const [
+                            NavigationRailDestination(
+                              icon: Icon(Icons.home_outlined),
+                              label: Text('Beranda'),
+                            ),
+                            NavigationRailDestination(
+                              icon: Icon(Icons.search),
+                              label: Text('Eksplorasi'),
+                            ),
+                            NavigationRailDestination(
+                              icon: Icon(Icons.assignment_outlined),
+                              label: Text('Lamaran'),
+                            ),
+                          ],
+                        ),
+                      if (rail) const VerticalDivider(width: 1),
+                      Expanded(
+                        child: switch (tab) {
+                          0 => home(),
+                          1 => vacancies(),
+                          2 => applications(),
+                          _ => Preferences(store: store, cloud: widget.cloud),
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+          bottomNavigationBar: rail ? null : bottomBar(),
+        );
       },
-      drawer: navigationDrawer(),
-      body: SafeArea(
-        bottom: false,
-        child: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.fromLTRB(22, 15, 22, 12),
-              child: Row(
-                children: [
-                  IconButton(
-                    tooltip: 'Buka menu utama',
-                    onPressed: () => scaffoldKey.currentState?.openDrawer(),
-                    style: IconButton.styleFrom(
-                      backgroundColor: lavender.withValues(alpha: .8),
-                      fixedSize: const Size(40, 40),
-                    ),
-                    icon: AnimatedIcon(
-                      icon: AnimatedIcons.menu_close,
-                      progress: menuAnimation,
-                      color: plum,
-                    ),
-                  ),
-                  const SizedBox(width: 8),
-                  const Brand(),
-                  const Spacer(),
-                  RoleSwitcher(store: store),
-                ],
-              ),
-            ),
-            if (store.storageError != null)
-              MaterialBanner(
-                content: Text(store.storageError!),
-                actions: [
-                  TextButton(
-                    onPressed: store.persist,
-                    child: const Text('Coba simpan'),
-                  ),
-                ],
-              ),
-            Expanded(
-              child: switch (tab) {
-                0 => home(),
-                1 => vacancies(),
-                2 => applications(),
-                _ => Preferences(store: store, cloud: widget.cloud),
-              },
-            ),
-          ],
-        ),
-      ),
-      bottomNavigationBar: bottomBar(),
     ),
   );
 
@@ -633,7 +685,7 @@ class _AppShellState extends State<AppShell>
         'Coba kata kunci lain atau ubah filter pencarian.',
         Icons.search_off,
       ),
-    ...jobs.map((j) => JobCard(job: j, store: store, compact: compact)),
+    ResponsiveJobs(jobs: jobs, store: store, compact: compact),
   ];
 
   Widget searchTools() => Column(
@@ -1404,7 +1456,7 @@ class _AppShellState extends State<AppShell>
                 : 'Buka detail lowongan lalu pilih status untuk mulai mencatat lamaran.',
             favorites ? Icons.bookmarks_outlined : Icons.work_outline,
           ),
-        ...jobs.map((j) => JobCard(job: j, store: store)),
+        ResponsiveJobs(jobs: jobs, store: store),
         if (!favorites)
           const Padding(
             padding: EdgeInsets.all(8),

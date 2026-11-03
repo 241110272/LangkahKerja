@@ -33,6 +33,7 @@ class _ManualApplicationState extends State<ManualApplication> {
     body: Form(
       key: form,
       child: ListView(
+        keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
         padding: const EdgeInsets.all(22),
         children: [
           const Text(
@@ -99,6 +100,7 @@ class _ManualApplicationState extends State<ManualApplication> {
           ),
           const SizedBox(height: 20),
           FilledButton(
+            key: const ValueKey('manual-save'),
             onPressed: busy
                 ? null
                 : () async {

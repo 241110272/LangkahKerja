@@ -84,12 +84,15 @@ void main() {
       find.byKey(const ValueKey('manual-company')),
       'Perusahaan Contoh',
     );
+    FocusManager.instance.primaryFocus?.unfocus();
+    await tester.pumpAndSettle();
     await tester.scrollUntilVisible(
-      find.text('Simpan catatan lamaran'),
+      find.byKey(const ValueKey('manual-save')),
       250,
       scrollable: find.byType(Scrollable).first,
     );
-    await tester.tap(find.text('Simpan catatan lamaran'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const ValueKey('manual-save')));
     await tester.pumpAndSettle();
     expect(store.applications.length, 1);
     expect(store.applicationJobs.values.single.title, 'Flutter Engineer');
